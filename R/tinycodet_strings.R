@@ -26,7 +26,7 @@
 #' * Infix operators for \link[=%s-%]{string arithmetic}.
 #' * Infix operators for \link[=%sget%]{string sub-setting},
 #' which get or remove the first and/or last \code{n} characters from strings.
-#' * Infix operators for \link[=%s\{\}%]{detecting patterns}.
+#' * Infix operators for \link[=str_truth]{detecting patterns}.
 #'
 #'
 #'
@@ -43,17 +43,22 @@
 #' print(x)
 #'
 #' # detect if there are digits:
-#' x %s{}% "[[:digits]]"
+#' x %s{}% "\\d"
+#'
+#' # find second last digit:
+#' loc <- stri_locate_ith(x, i = -2, regex = "\\d")
+#' stringi::stri_sub(x, from = loc)
 #'
 #' # cut x into matrix of individual words:
-#' x <- strcut_brk(x, "word")
+#' mat <- strcut_brk(x, "word")
 #'
-#' # re-order matrix using the fast %row~% operator:
-#' mat <- stringi::stri_rank(as.vector(x)) |> matrix(ncol=ncol(x))
-#' sorted <- x %row~% mat
+#' # sort rows of matrix using the fast %row~% operator:
+#' rank <- stringi::stri_rank(as.vector(mat)) |> matrix(ncol = ncol(mat))
+#' sorted <- mat %row~% rank
+#' sorted[is.na(sorted)] <- ""
 #'
 #' # join elements of every row into a single character vector:
-#' stri_c_mat(sorted, margin=1, sep=" ")
+#' stri_c_mat(sorted, margin = 1, sep = " ")
 #'
 
 #' @rdname aaa3_tinycodet_strings
