@@ -32,7 +32,7 @@ For \code{import_LL()}: \cr
 The specified functions will be placed in the current environment
 (like the global environment, or the environment within a function),
 and locked. \cr
-To "unload" or overwrite the functions, simply remove them; i.e.: \cr
+To unexpose or overwrite the functions, simply remove them; i.e.: \cr
 \code{rm(list=c("some_function1", "some_function2")}). \cr
 \cr
 For \code{import_int()}: \cr
@@ -46,15 +46,15 @@ or use it directly without re-assignment like so: \cr
 The \code{import_LL()} function
 places specific functions from a package in the current environment,
 and also locks (see \link[base]{lockBinding}) the specified functions to prevent modification. \cr
-The primary use-case for this function is for loading functions inside a local environment,
+The primary use-case for this function is for exposing functions inside a local environment,
 like the environment within a function. \cr
 \cr
 The \code{import_int()} function
 directly returns an internal function from a package. \cr
 It is similar to the \link[base]{:::} operator, but with 2 key differences: \cr
 \enumerate{
-\item It allows the user to explicitly set a library location through the \code{lib.loc} argument.
-\item It only searches internal functions, not exported ones.
+\item \code{import_int()} includes the \code{lib.loc} argument.
+\item \code{import_int()} only searches internal functions, not exported ones.
 This makes it clearer in your code that you're using an internal function,
 instead of making it ambiguous. \cr \cr
 }

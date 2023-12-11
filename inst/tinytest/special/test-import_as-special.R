@@ -27,7 +27,7 @@ expect_error(
 
 expect_error(
   import_as(~p1., "tinycodetfakepkg1", lib.loc=c(lib.loc1, .libPaths()), extensions = "stringi"),
-  pattern = "The following given extensions were not found to be actual reverse dependencies"
+  pattern = "The following given extensions were not found to be actual extensions"
 )
 
 
@@ -66,26 +66,6 @@ expect_error(
 
 
 # missing package error handling ====
-expect_error(
-  import_as(~ p3., "tinycodetfakepkg3", re_exports=TRUE, lib.loc=lib.loc2),
-  pattern = paste0(
-    "to load the namespace of package `",
-    "tinycodetfakepkg3",
-    "`, the following packages are required but not installed:"
-  ),
-  fixed = TRUE
-)
-
-expect_error(
-  import_as(~ p3., "tinycodetfakepkg3", re_exports=FALSE, lib.loc=lib.loc2),
-  pattern = paste0(
-    "to load the namespace of package `",
-    "tinycodetfakepkg3",
-    "`, the following packages are required but not installed:"
-  ),
-  fixed = TRUE
-)
-
 expect_error(
   import_as(~ p3., "tinycodetfakepkg3", dependencies = "tinycodetfakepkg1", lib.loc=lib.loc2),
   pattern = "The following dependencies are not installed",
@@ -126,6 +106,10 @@ out <- setdiff(names(p3.), ".__attributes__.") |> sort()
 expect_equal(out,  sort(p3))
 expect_true(p3.$.__attributes__.$args$re_exports)
 expect_false("acf" %in% names(p3.)) # expect base packages to be NOT re-exported
+expect_equal(
+  import_as(~ p3., "tinycodetfakepkg3", re_exports = FALSE, dependencies = "tinycodetfakepkg1", lib.loc = lib.loc1),
+  import_as(~ p3., "tinycodetfakepkg1", re_exports = FALSE, extensions = "tinycodetfakepkg3", lib.loc = lib.loc1),
+)
 
 
 # test import_as - Dependencies ====
@@ -216,7 +200,7 @@ import_as(
   re_exports = TRUE,
   dependencies=c("tinycodetfakepkg1", "tinycodetfakepkg2"),
   lib.loc=lib.loc1,
-  loadorder = c("main_package", "dependencies", "extensions")
+  import_order = c("main_package", "dependencies", "extensions")
 ) |> suppressMessages()
 p3 <- data.frame(
   package=c("tinycodetfakepkg3 + re-exports", "tinycodetfakepkg1", "tinycodetfakepkg2"),
@@ -236,12 +220,12 @@ expect_silent(import_as(
 ) |> suppressMessages())
 
 
-# test import_as - loadorder ====
+# test import_as - import_order ====
 import_as(
   ~ new., "tinycodetfakepkg3",
   re_exports = FALSE,
   dependencies = c("tinycodetfakepkg2", "tinycodetfakepkg1"),
-  loadorder = c("main_package", "dependencies", "extensions"),
+  import_order = c("main_package", "dependencies", "extensions"),
   lib.loc = lib.loc1
 )  |> suppressMessages()
 expect_equal(
@@ -261,7 +245,7 @@ import_as(
   ~ new., "tinycodetfakepkg1",
   re_exports = FALSE,
   extensions = c("tinycodetfakepkg3"),
-  loadorder = c("extensions", "main_package", "dependencies"),
+  import_order = c("extensions", "main_package", "dependencies"),
   lib.loc = lib.loc1
 ) |> suppressMessages()
 expect_equal(
@@ -280,7 +264,7 @@ expect_equal(
 import_as(
   ~ new., "tinycodetfakepkg1",
   re_exports = FALSE,
-  loadorder = c("main_package", "dependencies", "extensions"),
+  import_order = c("main_package", "dependencies", "extensions"),
   lib.loc = lib.loc1
 ) |> suppressMessages()
 expect_equal(

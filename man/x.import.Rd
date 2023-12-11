@@ -30,7 +30,7 @@ If a string, argument \code{alias} must be specified also.
 \item{x}{the object/function to be tested.}
 
 \item{which}{The attributes to list. If \code{NULL}, all attributes will be returned. \cr
-Possibilities: "pkgs", "conflicts", "versions", "args", and "ordered_object_names".}
+Possibilities: "pkgs", "conflicts", "args", and "ordered_object_names".}
 }
 \value{
 For \code{help.import()}: \cr
@@ -48,15 +48,15 @@ For \code{attr.import(alias, which = "pkgs")}: \cr
 Returns a list with 3 elements:
 \itemize{
 \item packages_order: a character vector of package names,
-giving the packages in the order they were loaded in the alias object.
+giving the packages in the order they were imported in the alias object.
 \item main_package: a string giving the name of the main package.
-Re-exported functions, if present, are loaded together with the main package.
+Re-exported functions, if present, are taken together with the main package.
 \item re_exports.pkgs: a character vector of package names,
 giving the packages from which the re-exported functions in the main package were taken. \cr \cr
 }
 
 For \code{attr.import(alias, which = "conflicts")}: \cr
-The order in which packages are loaded in the alias object
+The order in which packages are imported in the alias object
 (see attribute \code{pkgs$packages_order})
 matters:
 Functions from later named packages overwrite those from earlier named packages,
@@ -64,24 +64,22 @@ in case of conflicts. \cr
 The "conflicts" attribute returns a data.frame showing exactly which functions overwrite
 functions from earlier named packages, and as such "win" the conflicts. \cr
 \cr
-For \code{attr.import(alias, which = "versions")}: \cr
-A data.frame, giving the version of every package loaded in the alias,
-ignoring re-exports. \cr
-\cr
 For \code{attr.import(alias, which = "args")}: \cr
 Returns a list of input arguments.
 These were the arguments supplied to \link{import_as} when
 the alias object in question was created. \cr
 \cr
 For \code{attr.import(alias, which = "ordered_object_names")}: \cr
-Gives the names of the objects in the alias, in the order as they were loaded. \cr
-For conflicting objects, the last load is used for the ordering. \cr
+Gives the names of the objects in the alias, in the order as they were imported. \cr
+For conflicting objects, the last imported ones are used for the ordering. \cr
 Note that if argument \code{re_exports} is \code{TRUE},
-re-exported functions are loaded when the main package is loaded, thus changing this order slightly.
+re-exported functions are imported when the main package is imported,
+thus changing this order slightly.
 }
 \description{
 The \code{help.import()} function
-finds the help file for functions in an alias object or exposed infix operators. \cr
+finds the help file for functions or topics,
+including exposed functions/operators as well as functions in a package alias object. \cr
 \cr
 The \code{is.tinyimport()} function
 checks if an alias object or an exposed function is of class \code{tinyimport};
@@ -89,7 +87,7 @@ i.e. if it is an object produced by the
 \link{import_as}, \link{import_inops}, or \link{import_LL} function. \cr
 \cr
 The \code{attr.import()} function
-gets one specific special attributes or all special attributes
+gets one or all special attribute(s)
 from an alias object returned by \link{import_as}. \cr
 \cr
 }
@@ -107,6 +105,7 @@ help.import(i = mr.$add)
 help.import(i = `\%>\%`)
 help.import(i = "add", alias = mr.)
 help.import(topic = "\%>\%", package = "magrittr")
+help.import("\%>\%", package = "magrittr") # same as previous line
 
 }\if{html}{\out{</div>}}
 }
@@ -120,7 +119,7 @@ is.tinyimport(to.) # returns TRUE
 is.tinyimport(`\%:=\%`) # returns TRUE
 is.tinyimport(`\%s==\%`) # returns FALSE: not imported by tinycodet import system
 
-attr.import(to., which="conflicts")
+attr.import(to., which = "conflicts")
 
 
 

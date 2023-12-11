@@ -2,22 +2,29 @@
 #'
 #' @description
 #' The \code{pkgs %installed in% lib.loc} operator
-#' checks if one or more package(s) \code{pkgs} exist(s)
-#' in library location \code{lib.loc}, without loading the package(s). \cr
+#' checks if one or more packages (\code{pkgs}) exist
+#' in a library location (\code{lib.loc}), without loading the packages. \cr
 #' The syntax of this operator forces the user to make it
 #' syntactically explicit
-#' where to look for installed R-package(s). \cr
+#' where to look for installed R-packages. \cr
 #' As \code{pkgs %installed in% lib.loc} does not even load a package,
 #' the user can safely use it
 #' without fearing any unwanted side-effects. \cr
 #' \cr
-#' The \code{pkg_get_deps()} function gets the dependencies of a package
+#' The \code{pkg_get_deps()} function gets the \bold{direct} dependencies of a package
 #' from the Description file. It works on non-CRAN packages also. \cr
+#' \cr
+#' The \code{pkg_get_deps_minimal()} function is the same as
+#' \code{pkg_get_deps()},
+#' except with
+#' \code{base, recom, rstudioapi, shared_tidy}
+#' all set to \code{FALSE},
+#' and the default value for \code{deps_type} is c("Depends", "Imports"). \cr
 #' \cr
 #' The \code{pkg_lsf()} function
 #' gets a list of exported functions/operators from a package. \cr
 #' One handy use for this function is to, for example,
-#' globally attach all infix operators from a function using \code{library},
+#' globally attach all infix operators from a package using \code{library},
 #' like so:
 #'
 #' ```{r echo = TRUE, eval = FALSE}
@@ -32,18 +39,28 @@
 #' The \code{lib.loc} argument would usually be \code{.libPaths()}. \cr
 #' See also \link[base]{loadNamespace}.
 #' @param deps_type a character vector, giving the dependency types to be used. \cr
-#' Defaults to \code{c("LinkingTo", "Depends", "Imports")}. \cr
 #' The order of the character vector given in \code{deps_type} affects
 #' the order of the returned character vector; see Details sections.
 #' @param base logical,
 #' indicating whether base/core R should be included (\code{TRUE}),
-#' or not included (\code{FALSE}; the default).
+#' or not included (\code{FALSE}).
 #' @param recom logical,
-#' indicating whether the pre-installed "recommended" R-packages should be included (\code{TRUE}),
-#' or not included (\code{FALSE}; the default).
+#' indicating whether the pre-installed 'recommended' R-packages should be included
+#' (\code{TRUE}),
+#' or not included (\code{FALSE}).
 #' @param rstudioapi logical,
-#' indicating whether the \code{rstudioapi} R-package should be included (\code{TRUE}),
-#' or not included (\code{FALSE}; the default).
+#' indicating whether the 'rstudioapi' R-package should be included
+#' (\code{TRUE}),
+#' or not included (\code{FALSE}).
+#' @param shared_tidy logical,
+#' indicating whether the shared dependencies of the 'tidyverse' should be included
+#' (\code{TRUE}),
+#' or not included (\code{FALSE}). \cr
+#' \bold{Details:} \cr
+#' 'tidyverse' packages tend to have more dependencies than 'tinyverse' and 'fastverse' packages. \cr
+#' Some of these dependencies are shared across the 'tidyverse'. \cr
+#' The "official" list of shared dependencies in the 'tidyverse' currently is the following: \cr
+#' 'rlang', 'lifecycle', 'cli', 'glue', and 'withr'.
 #' @param type The type of functions to list. Possibilities:
 #'  * \code{"inops"} or \code{"operators"}: Only infix operators.
 #'  * \code{"regfuns"}: Only regular functions (thus excluding infix operators).
@@ -51,17 +68,12 @@
 #'
 #' @details
 #' For \code{pkg_get_deps()}: \cr
-#' If using the \code{pkgs_get_deps()} function
-#' to fill in the \code{dependencies} argument of the \link{import_as} function,
-#' one may want to know the how character vector returned by \code{pkgs_get_deps()} is ordered. \cr
-#' The order is determined as follows. \cr
 #' For each string in argument \code{deps_type},
 #' the package names in the corresponding field of the Description file are extracted,
 #' in the order as they appear in that field. \cr
 #' The order given in argument \code{deps_type}
 #' also affects the order of the returned character vector: \cr
-#' The default, \cr
-#' \code{c("LinkingTo", "Depends", "Imports")}, \cr
+#' For example, \code{c("LinkingTo", "Depends", "Imports")}, \cr
 #' means the package names are extracted from the fields in the following order:
 #'
 #' \enumerate{
@@ -79,7 +91,7 @@
 #' and the value \code{FALSE} indicates a package is not installed. \cr
 #' \cr
 #' For \code{pkg_get_deps()}: \cr
-#' A character vector of unique dependencies. \cr
+#' A character vector of direct dependencies, without duplicates. \cr
 #' \cr
 #' For \code{pkg_lsf()}: \cr
 #' Returns a character vector of exported function names in the specified package.
@@ -91,13 +103,13 @@
 #'
 #'
 #'
-#' @examples
-#'
-#' check <- "dplyr" %installed in% .libPaths()
-#'
-#' if(check) pkgs <- pkg_get_deps("dplyr") # many dependencies
-#' if(check) pkgs %installed in% .libPaths()
-#' if(check) pkg_lsf("dplyr", "all")
+#' @examplesIf "dplyr" %installed in% .libPaths()
+#' "dplyr" %installed in% .libPaths()
+#' 
+#' pkg_get_deps_minimal("dplyr")
+#' pkgs <- pkg_get_deps("dplyr")
+#' pkgs %installed in% .libPaths()
+#' pkg_lsf("dplyr", "all")
 #'
 #'
 #'
@@ -143,17 +155,26 @@ NULL
 #' @rdname pkgs
 #' @export
 pkg_get_deps <- function(
-    package, lib.loc=.libPaths(), deps_type=c("LinkingTo", "Depends", "Imports"),
-    base=FALSE, recom=FALSE, rstudioapi=FALSE
+    package, lib.loc = .libPaths(), deps_type = c("LinkingTo", "Depends", "Imports"),
+    base = FALSE, recom = TRUE, rstudioapi = TRUE, shared_tidy = TRUE
 ) {
   if(length(package)>1){
     stop("Only one package can be given")
   }
   .internal_check_lib.loc(lib.loc, sys.call())
   .internal_check_pkgs(package, lib.loc, abortcall = sys.call())
+  
+  check_opts <- vapply(
+    list(base, recom, rstudioapi, shared_tidy),
+    FUN = \(x)isTRUE(x) || isFALSE(x),
+    FUN.VALUE = logical(1)
+  )
+  if(any(!check_opts)) {
+    stop("arguments `base`, `recom`, `rstudioapi`, `shared_tidy` must each be either `TRUE` OR `FALSE`")
+  }
 
   temp.fun <- function(x) { .internal_get_pkg_deps(
-      package, lib.loc, x, base = base, recom = recom, rstudioapi = rstudioapi
+      package, lib.loc, type = x, base = base, recom = recom, rstudioapi = rstudioapi, shared_tidy = shared_tidy
   )}
   depends <- lapply(
     deps_type, FUN = temp.fun
@@ -161,6 +182,15 @@ pkg_get_deps <- function(
   depends <- do.call(c, depends) |> unique()
 
   return(depends)
+}
+
+
+#' @rdname pkgs
+#' @export
+pkg_get_deps_minimal <- function(package, lib.loc = .libPaths(), deps_type = c("Depends", "Imports")) {
+  return(pkg_get_deps(
+    package, lib.loc, deps_type, base = FALSE, recom = FALSE, rstudioapi = FALSE, shared_tidy = FALSE
+  ))
 }
 
 
@@ -195,7 +225,7 @@ pkg_lsf <- function(package, type, lib.loc = .libPaths()) {
 #' @noRd
 .internal_get_pkg_deps <- function(
     package, lib.loc, type,
-    base=FALSE, recom=FALSE, rstudioapi=FALSE
+    base, recom, rstudioapi, shared_tidy
 ) {
   # based of https://stackoverflow.com/questions/30223957/elegantly-extract-r-package-dependencies-of-a-package-not-listed-on-cran
   dcf <- read.dcf(file.path(system.file("DESCRIPTION", package = package, lib.loc = lib.loc)))
@@ -203,16 +233,17 @@ pkg_lsf <- function(package, type, lib.loc = .libPaths()) {
   val <- unlist(strsplit(dcf[, jj], ","), use.names=FALSE)
   val <- gsub("\\s.*", "", trimws(val))
   depends <- val[val != "R"]
-  if(!base){
-    pkgs_core <- .internal_list_coreR()
-    depends <- setdiff(depends, pkgs_core)
+  if(!base) {
+    depends <- setdiff(depends, .internal_list_coreR())
   }
   if(!recom) {
-    pkgs_preinst <- .internal_list_preinst()
-    depends <- setdiff(depends, pkgs_preinst)
+    depends <- setdiff(depends, .internal_list_preinst())
   }
   if(!rstudioapi) {
     depends <- setdiff(depends, "rstudioapi")
+  }
+  if(!shared_tidy) {
+    depends <- setdiff(depends, .internal_list_tidyshared())
   }
   return(depends)
 }

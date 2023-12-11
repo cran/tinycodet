@@ -15,10 +15,10 @@ expect_equal(
   attr.import(stri., "conflicts"),
   myattr$conflicts
 )
-expect_equal(
-  attr.import(stri., "versions"),
-  myattr$versions
-)
+# expect_equal(
+#   attr.import(stri., "versions"),
+#   myattr$versions
+# )
 expect_equal(
   attr.import(stri., "args"),
   myattr$args
@@ -29,7 +29,7 @@ expect_equal(
 )
 expect_error(
   attr.import(stri., "foo"),
-  pattern = "unknown which given"
+  pattern = "unknown `which` given"
 )
 expect_error(
   attr.import(environment()),

@@ -1,5 +1,5 @@
 
-# test import_as - single package:
+# test import_as - single package ====
 stri <- loadNamespace("stringi") |> getNamespaceExports()
 temp.fun <- function() {
   import_as(~stri., "stringi")
@@ -9,7 +9,7 @@ temp.fun <- function() {
 expect_equal(temp.fun(), sort(stri))
 
 
-# test import_as - functional functions:
+# test import_as - functional functions ====
 temp.fun <- function() {
   import_as(~stri., "stringi")
   stri.$stri_c("a", "b")
@@ -17,10 +17,15 @@ temp.fun <- function() {
 expect_equal(temp.fun(), "ab")
 
 
-# package error handling ====
+# main_package error handling ====
 expect_error(
   import_as(~stri., c("stringi", "tinycodet")),
-  pattern = "A single package must be given in the `main_package` argument"
+  pattern = "`main_package` must be a single string"
+)
+
+expect_error(
+  import_as(~stri., ~ stringi),
+  pattern = "`main_package` must be a single string"
 )
 
 expect_error(
@@ -63,6 +68,41 @@ expect_error(
 )
 
 
+# dependencies/extensions basic error handling ====
+expect_error(
+  import_as(~stri., "stringi", dependencies = ~foo),
+  pattern = "`dependencies` must be a character vector",
+  fixed = TRUE
+)
+expect_error(
+  import_as(~stri., "stringi", dependencies = character(0)),
+  pattern = "`dependencies` must be a character vector",
+  fixed = TRUE
+)
+
+expect_error(
+  import_as(~stri., "stringi", extensions = ~foo),
+  pattern = "`extensions` must be a character vector",
+  fixed = TRUE
+)
+expect_error(
+  import_as(~stri., "stringi", extensions = character(0)),
+  pattern = "`extensions` must be a character vector",
+  fixed = TRUE
+)
+
+expect_error(
+  import_as(~stri., "stringi", dependencies = character(11)),
+  pattern = "more than 10 packages not allowed to be imported under a single alias",
+  fixed = TRUE
+)
+expect_error(
+  import_as(~stri., "stringi", extensions = character(11)),
+  pattern = "more than 10 packages not allowed to be imported under a single alias",
+  fixed = TRUE
+)
+
+
 # other error handling ====
 expect_error(
   import_as(~stri., "stringi", re_exports = NA),
@@ -75,13 +115,13 @@ expect_error(
 )
 
 expect_error(
-  import_as(~stri., "stringi", loadorder = letters[1:4]),
-  pattern = "Improper load order given"
+  import_as(~stri., "stringi", import_order = letters[1:4]),
+  pattern = "Improper `import_order` given"
 )
 
 expect_error(
-  import_as(~stri., "stringi", loadorder = c("main_package", "dependencies")),
-  pattern = "Improper load order given"
+  import_as(~stri., "stringi", import_order = c("main_package", "dependencies")),
+  pattern = "Improper `import_order` given"
 )
 
 expect_error(
@@ -94,3 +134,4 @@ temp.fun <- function(){
   stri_c("a", "b")
 }
 expect_error(temp.fun(), "could not find function")
+

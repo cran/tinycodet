@@ -51,27 +51,33 @@
 #' is to somewhat find the best of both worlds.
 #' It does this by introducing the following functions: \cr
 #'
-#' - \link{import_as}:
-#' Load a main package, and optionally its re-exports + its dependencies + its extensions, under a single alias.
+#'  * \link{import_as}:
+#' Import a main package,
+#' and optionally its re-exports + its direct dependencies + its direct extensions,
+#' under a single alias.
 #' This essentially combines the attaching advantage of using multiple related packages (item 7 on the list),
 #' whilst keeping most advantages of using without attaching a package.
-#' - \link{import_inops}:
+#'  * \link{import_inops}:
 #' Expose infix operators from a package or an alias object to the current environment.
 #' This gains the attaching advantage of less typing (item 6 on the list),
 #' whilst simultaneously avoiding the disadvantage of attaching functions from a package globally (item 4 on the list).
-#' - \link{import_data}:
+#'  * \link{import_data}:
 #' Directly return a data set from a package,
 #' to allow straight-forward assignment.
 #'
 #' Furthermore, there are two miscellaneous \code{import_} - functions:
 #' \link{import_LL} and \link{import_int}. \cr
-#' And there are also some additional helper functions for the package import system,
-#' see \link[=help.import]{x.import} and \link[=pkg_get_deps]{pkgs}. \cr
 #' \cr
-#' All \code{import_}-functions have the \code{lib.loc} argument
-#' to specify the library path to load packages from,
-#' thus allowing straight-forward project isolation. \cr
-#' \cr
+#' The import system also includes general helper functions:
+#' 
+#'  * The \link[=help.import]{x.import} functions:
+#'  helper functions specifically for the 'tinycodet' import system.
+#'  * The \link{pversion}_ functions:
+#'  check mismatch between loaded package version and package version in library path.
+#'  * The \link[=pkg_get_deps]{pkgs} - functions:
+#'  general helper functions regarding packages.
+#' 
+#' 
 #' See the examples section below
 #' to get an idea of how the 'tinycodet' import system works in practice.
 #' More examples can be found on the website (\url{https://tony-aw.github.io/tinycodet/})
@@ -98,14 +104,18 @@
 #' Of course, if one wishes to use a package (like
 #' 'stringi') \bold{only} within a specific environment,
 #' like only inside a function,
-#' it becomes advantageous to still load the package using the 'tinycodet' import system
-#' (in that case the \link{import_LL} function would be most applicable). \cr
+#' it becomes advantageous to still import the package using the 'tinycodet' import system.
+#' In that case the \link{import_LL} function would be most applicable. \cr
 #' \cr \cr
 #' \bold{Some Additional Comments on the 'tinycodet' Import System} \cr
 #'
 #'  * (S3) Methods will automatically be registered.
 #'  * Pronouns, such as the \code{.data} and \code{.env} pronouns
 #'  from the 'rlang' package, will work without any prefixes required.
+#'  * All functions imported by the
+#'  \link{import_as}, \link{import_inops}, or \link{import_LL} functions
+#'  have a "package" attribute,
+#'  so you will always know which function came from which package.
 #'
 #'
 #' @seealso \link{tinycodet_help}
@@ -118,7 +128,7 @@
 #'
 #' # NO packages are being attached in any of the following code
 #'
-#' # load 'dplyr' + its re-exports + extension 'powerjoin', under alias "dpr.":
+#' # import 'dplyr' + its re-exports + extension 'powerjoin', under alias "dpr.":
 #' import_as(
 #'   ~ dpr., "dplyr", re_exports = TRUE, extensions = "powerjoin"
 #' )

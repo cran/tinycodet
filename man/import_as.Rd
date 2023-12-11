@@ -2,7 +2,7 @@
 % Please edit documentation in R/import_as.R
 \name{import_as}
 \alias{import_as}
-\title{Load R-package and its Re-exports and/or its (Reverse) Dependencies Under a Single Alias}
+\title{Import R-package, its Re-exports, Dependencies, and/or Extensions, Under a Single Alias}
 \usage{
 import_as(
   alias,
@@ -11,17 +11,17 @@ import_as(
   dependencies = NULL,
   extensions = NULL,
   lib.loc = .libPaths(),
-  loadorder = c("dependencies", "main_package", "extensions")
+  import_order = c("dependencies", "main_package", "extensions")
 )
 }
 \arguments{
 \item{alias}{a syntactically valid non-hidden name giving the alias object
-where the package(s) are to be loaded into. \cr
+where the package(s) are to be imported into. \cr
 This name can be given either as a single string (i.e. \code{"alias."}),
 or as a one-sided formula with a single term (i.e. \code{~ alias.}).}
 
 \item{main_package}{a single string,
-giving the name of the main package to load under the given alias.}
+giving the name of the main package to import under the given alias.}
 
 \item{re_exports}{\code{TRUE} or \code{FALSE}.
 \itemize{
@@ -29,30 +29,30 @@ giving the name of the main package to load under the given alias.}
 are added to the alias together with the main package.
 This is the default, as it is analogous to the behaviour of base R's \link{::} operator.
 \item If \code{re_exports = FALSE}, these re-exports are not added together with the main package.
-The user can still load the packages from which the re-exported functions came from,
+The user can still import the packages under the alias from which the re-exported functions came from,
 by specifying them in the \code{dependencies} argument.
 }}
 
 \item{dependencies}{an optional character vector,
 giving the names of the dependencies of the
-\code{main_package} to be loaded also under the alias. \cr
-Defaults to \code{NULL}, which means no dependencies are loaded. \cr
+\code{main_package} to be imported also under the alias. \cr
+Defaults to \code{NULL}, which means no dependencies are imported under the alias. \cr
 See \link{pkg_get_deps} to quickly get dependencies from a package. \cr}
 
 \item{extensions}{an optional character vector,
 giving the names of the extensions of the
-\code{main_package} to be loaded also under the alias. \cr
-Defaults to \code{NULL}, which means no extensions are loaded. \cr}
+\code{main_package} to be imported also under the alias. \cr
+Defaults to \code{NULL}, which means no extensions are imported under the alias. \cr}
 
 \item{lib.loc}{character vector specifying library search path
 (the location of R library trees to search through). \cr
 The \code{lib.loc} argument would usually be \code{.libPaths()}. \cr
 See also \link[base]{loadNamespace}.}
 
-\item{loadorder}{the character vector \cr
+\item{import_order}{the character vector \cr
 \code{c("dependencies", "main_package", "extensions")}, \cr
 or some re-ordering of this character vector,
-giving the relative load order of the groups of packages. \cr
+giving the relative import order of the groups of packages. \cr
 See Details section for more information. \cr}
 }
 \value{
@@ -67,14 +67,16 @@ The alias object will be placed in the current environment
 To use, for example, function "some_function()" from alias "alias.", use: \cr
 \code{alias.$some_function()} \cr
 To see the special attributes of this alias object, use \link{attr.import}. \cr
-To "unload" the package alias object, simply remove it (i.e. \code{rm(list="alias.")}). \cr
+To "unimport" the package alias object, simply remove it (i.e. \code{rm(list="alias.")}). \cr
 }
 \description{
 The \code{import_as()} function
 imports the namespace of an R-package,
 and optionally also its re-exports, dependencies, and extensions,
 all under the same alias.
-The specified alias will be placed in the current environment
+The specified alias,
+containing the exported functions from the specified packages,
+will be placed in the current environment
 (like the global environment, or the environment within a function). \cr
 }
 \details{
@@ -85,12 +87,12 @@ The specified alias will be placed in the current environment
 \item "Dependencies" are here defined as any R-package appearing in the
 "Depends", "Imports", or "LinkingTo" fields of the Description file of the
 \code{main_package}. So no recursive dependencies.
-\item "Extensions" are here defined as
-direct reverse-depends or direct reverse-imports.
-It does not matter if these are CRAN or non-CRAN packages.
-However, the intended meaning of an extension is not merely a reverse dependency,
-but a package that actually extends the functionality of the
-\code{main_package}. \cr \cr
+\item "Extensions" are reverse-dependencies that actually extend the functionality of the
+\code{main_package}. \cr
+Programmatically, some package "E" is considered an extension of some
+"main_package",
+if the following is \code{TRUE}: \cr
+\code{"main_package" \%in\% } \link{pkg_get_deps_minimal}\code{("E")} \cr \cr
 }
 
 \bold{Why Aliasing Multiple Packages is Useful} \cr
@@ -99,19 +101,19 @@ whilst avoiding the disadvantages of attaching a package (see \link{tinycodet_im
 one would traditionally use the \link[base]{::} operator like so: \cr
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{main_package::some_function1()
-extension1::some_function2()
-extension2::some_function3()
+dependency1::some_function2()
+extension1::some_function3()
 }\if{html}{\out{</div>}}
 
 This becomes cumbersome as more packages are needed and/or
 as the package name(s) become longer. \cr
 The \code{import_as()} function avoids this issue
-by allowing multiple \bold{related} packages to be loaded under a single alias,
+by allowing multiple \bold{related} packages to be imported under a single alias,
 allowing one to code like this:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{import_as(
    ~ alias., "main_package",
-   extensions = c("extension1", "extension2"),
+   dependencies = "dependency1", extensions = "extension1",
    lib.loc = .libPaths()
 )
 alias.$some_function1()
@@ -119,13 +121,9 @@ alias.$some_function2()
 alias.$some_function3()
 }\if{html}{\out{</div>}}
 
-Thus loading a package, or multiple directly related packages, under a single alias,
+Thus importing a package, or multiple directly related packages, under a single alias,
 which \code{import_as()} provides, avoids the above issues.
-Loading (a) package(s) under an alias is known as "aliasing" (a) package(s). \cr
-\cr
-Notice that the \code{import_as()} function has the \code{lib.loc} argument,
-allowing to specify the library path,
-which the \link[base]{::} operator does not directly provide. \cr
+Importing a package under an alias is referred to as "aliasing" a package. \cr
 \cr
 \cr
 \bold{Alias Naming Recommendation} \cr
@@ -135,16 +133,16 @@ I recommend ending (not starting!) all alias names
 with a dot (\code{.}) or underscore (\code{_}). \cr
 \cr
 \cr
-\bold{Regarding the Load Order} \cr
+\bold{Regarding \code{import_order}} \cr
 The order of the character vector given in
 the \code{dependencies} and \code{extensions} arguments matters.
 If multiple packages share objects with the same name,
 the objects of the package named last will overwrite those of the earlier named packages. \cr
 \cr
-The \code{loadorder} argument defaults to the character vector \cr
+The \code{import_order} argument defaults to the character vector \cr
 \code{c("dependencies", "main_package", "extensions")}, \cr
 which is the recommended setting. \cr
-This setting results in the following load order: \cr
+This setting results in the following importing order: \cr
 \enumerate{
 \item The dependencies, \bold{in the order specified by the \code{depenencies} argument}.
 \item The main_package (see argument \code{main_package}),
@@ -154,18 +152,22 @@ including re-exports (if \code{re_exports = TRUE}).
 
 \bold{Other Details} \cr
 The \code{import_as()} function
-does not support loading base/core R under an alias. \cr
+does not support importing base/core R under an alias. \cr
+Packages that appear in the "Suggests" or "Enhances" fields of packages
+are not considered dependencies or extensions. \cr
+No more than 10 packages are allowed to be imported under a single alias. \cr
 \cr
 }
 \examples{
 \dontshow{if (all(c("data.table", "tidytable") \%installed in\% .libPaths())) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+all(c("data.table", "tidytable") \%installed in\% .libPaths())
 
 import_as( # this creates the 'tdt.' object
-  "tdt.", "data.table", extensions = "tidytable"
+  "tdt.", "tidytable", dependencies = "data.table"
 )
 # same as:
 import_as(
-  ~ tdt., "data.table", extensions = "tidytable"
+  ~ tdt., "tidytable", dependencies = "data.table"
 )
 
 

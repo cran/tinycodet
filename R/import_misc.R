@@ -5,14 +5,14 @@
 #' The \code{import_LL()} function
 #' places specific functions from a package in the current environment,
 #' and also locks (see \link[base]{lockBinding}) the specified functions to prevent modification. \cr
-#' The primary use-case for this function is for loading functions inside a local environment,
+#' The primary use-case for this function is for exposing functions inside a local environment,
 #' like the environment within a function. \cr
 #' \cr
 #' The \code{import_int()} function
 #' directly returns an internal function from a package. \cr
 #' It is similar to the \link[base]{:::} operator, but with 2 key differences: \cr
-#'  1) It allows the user to explicitly set a library location through the \code{lib.loc} argument.
-#'  2) It only searches internal functions, not exported ones.
+#'  1) \code{import_int()} includes the \code{lib.loc} argument.
+#'  2) \code{import_int()} only searches internal functions, not exported ones.
 #'  This makes it clearer in your code that you're using an internal function,
 #'  instead of making it ambiguous. \cr \cr
 #'
@@ -61,7 +61,7 @@
 #' The specified functions will be placed in the current environment
 #' (like the global environment, or the environment within a function),
 #' and locked. \cr
-#' To "unload" or overwrite the functions, simply remove them; i.e.: \cr
+#' To unexpose or overwrite the functions, simply remove them; i.e.: \cr
 #' \code{rm(list=c("some_function1", "some_function2")}). \cr
 #' \cr
 #' For \code{import_int()}: \cr
@@ -114,12 +114,14 @@ import_LL <- function(
   # check library:
   .internal_check_lib.loc(lib.loc, sys.call())
 
+
   # check main_package:
   if(!is.character(package) | length(package)>1){
     stop("`package` must be a single string")
   }
   .internal_check_pkgs(pkgs=package, lib.loc=lib.loc, abortcall=sys.call())
-
+  
+  
   # check selection:
   checks <- c(
     !is.character(selection),
@@ -130,10 +132,12 @@ import_LL <- function(
   if(any(checks)) {
     stop("`selection` must be a non-empty character vector of unique function names")
   }
+  
   # load package:
   ns <- .internal_prep_Namespace(package, lib.loc, abortcall = sys.call())
   ns <- ns[lapply(ns, is.function) |> unlist()]
-
+  
+  # finish up:
   if(any(!selection %in% names(ns))) {
     stop("specified functions not found in package namespace")
   }
@@ -156,8 +160,6 @@ import_LL <- function(
 #' @export
 import_int <- function(form, lib.loc = .libPaths()) {
 
-  # check library:
-  .internal_check_lib.loc(lib.loc, sys.call())
 
   # check form:
   check_form <- inherits(form, "formula") && is.call(form) && form[[1]] == "~"
@@ -175,10 +177,14 @@ import_int <- function(form, lib.loc = .libPaths()) {
   if(length(package) != 1) {
     stop("must give a single package")
   }
+  
+  # check library:
+  .internal_check_lib.loc(lib.loc, sys.call())
+
+  # check & get package:
   .internal_check_pkgs(package, lib.loc, abortcall = sys.call())
-
-
   ns <- .get_internals(package, lib.loc, abortcall = sys.call())
+  
   ns <- as.environment(ns)
   if(!intfun %in% names(ns)) {
     stop(paste0(intfun, " is not an internal function of ", package))
@@ -227,20 +233,7 @@ import_int <- function(form, lib.loc = .libPaths()) {
 #' @noRd
 .get_internals <- function(package, lib.loc, abortcall) {
 
-  pkgs_required <- pkg_get_deps(package, lib.loc = lib.loc, deps_type=c("LinkingTo", "Depends", "Imports"),
-                                base=FALSE, recom=TRUE, rstudioapi=TRUE)
-  pkgs_total <- c(package, pkgs_required)
-  pkgs_missing <- pkgs_total[!pkgs_total %installed in% lib.loc]
-  if(length(pkgs_missing)>0) {
-    error.txt <- paste0(
-      "to load the namespace of package `",
-      package,
-      "`, the following packages are required but not installed:",
-      "\n",
-      paste0(pkgs_missing, collapse = ", ")
-    )
-    stop(simpleError(error.txt, call = abortcall))
-  }
+  .internal_check_ns_requirements(package, lib.loc, abortcall)
 
   ns <- loadNamespace(package, lib.loc = lib.loc) |> as.list(all.names=TRUE, sorted=TRUE)
   names_exported <- names(ns[[".__NAMESPACE__."]][["exports"]])
