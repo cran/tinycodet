@@ -66,17 +66,23 @@ Therefore, in such cases, the right hand side of
 \code{X \%<-c\% A} need to be surrounded with brackets.
 I.e.:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{x \%<-c\% (2+2)
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{x \%<-c\% (2 + 2)
 }\if{html}{\out{</div>}}
+
+Note that the \code{lock_TF()} function and \code{\%s<-c\%} operator
+create constants through \link[base]{lockBinding}. \cr
+The constants are protected from modification by copy,
+but they are \bold{not} protected from modification by reference
+(see for example \code{collapse::}\link[collapse]{setv}).
 }
 \examples{
 
 lock_TF()
-X \%<-c\% data.frame(x=3, y=2) # this data.frame cannot be changed. Only accessed or removed.
+X \%<-c\% data.frame(x = 3, y = 2) # this data.frame cannot be changed. Only accessed or removed.
 X[1, ,drop=FALSE]
 
 
 }
 \seealso{
-\code{\link[=tinycodet_safer]{tinycodet_safer()}}
+\link{tinycodet_safer}
 }

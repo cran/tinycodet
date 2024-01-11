@@ -139,9 +139,9 @@
 #' To use, for example, function "some_function()" from alias "alias.", use: \cr
 #' \code{alias.$some_function()} \cr
 #' To see the special attributes of this alias object, use \link{attr.import}. \cr
-#' To "unimport" the package alias object, simply remove it (i.e. \code{rm(list="alias.")}). \cr
+#' To "unimport" the package alias object, simply remove it (i.e. \code{rm(list = "alias.")}). \cr
 #'
-#' @seealso [tinycodet_import()]
+#' @seealso \link{tinycodet_import}
 #'
 #'
 #' @examplesIf all(c("data.table", "tidytable") %installed in% .libPaths())
@@ -169,7 +169,7 @@ import_as <- function(
   
   # Check alias:
   alias_is_formula <- inherits(alias, "formula") && is.call(alias) && alias[[1]] == "~"
-  if(!is.character(alias) & !alias_is_formula) {
+  if(!is.character(alias) && !alias_is_formula) {
     stop("`alias` needs to be either a string or a formula")
   }
   if(alias_is_formula) {
@@ -263,9 +263,9 @@ import_as <- function(
   # )
   namespaces <- list()
   
-  message("Importing packages...")
+  message("Importing packages and registering methods...")
   
-  for (i in 1:length(pkgs)) {
+  for (i in seq_along(pkgs)) {
     
     namespace_current <- .internal_prep_Namespace(pkgs[i], lib.loc, abortcall = sys.call())
     conflicts_df$package[i] <- pkgs[i]
@@ -273,7 +273,7 @@ import_as <- function(
     # versions_df$version_ns[i] <- getNamespaceVersion(pkgs[i])
     # versions_df$version_lib.loc[i] <- utils::packageVersion(pkgs[i], lib.loc)
     
-    if(pkgs[i]==main_package & isTRUE(re_exports)) {
+    if(pkgs[i]==main_package && isTRUE(re_exports)) {
       foreignexports <- .internal_get_foreignexports_ns(main_package, lib.loc, abortcall=sys.call())
       
       namespace_current <- utils::modifyList(
@@ -330,7 +330,6 @@ import_as <- function(
   message(paste0(
     "Done", "\n",
     "You can now access the functions using `", alias, "$", "`", "\n",
-    "Methods will work like normally \n",
     "For conflicts report, packages order, and other attributes, run `", "attr.import(", alias, ")", "` \n"
   ))
   
@@ -339,7 +338,7 @@ import_as <- function(
 #' @keywords internal
 #' @noRd
 .is.tinyalias <- function(alias_chr, env) {
-  if(!is.character(alias_chr) | length(alias_chr)!=1) {
+  if(!is.character(alias_chr) || length(alias_chr)!=1) {
     stop("`alias_chr` must be a single string")
   }
   if(!exists(alias_chr, envir = env, inherits = FALSE)) {

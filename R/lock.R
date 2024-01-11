@@ -45,8 +45,14 @@
 #' I.e.:
 #'
 #' ```{r, eval = FALSE, echo = TRUE}
-#' x %<-c% (2+2)
+#' x %<-c% (2 + 2)
 #' ```
+#' 
+#' Note that the \code{lock_TF()} function and \code{%s<-c%} operator
+#' create constants through \link[base]{lockBinding}. \cr
+#' The constants are protected from modification by copy,
+#' but they are \bold{not} protected from modification by reference
+#' (see for example \code{collapse::}\link[collapse]{setv}).
 #'
 #' @returns
 #' For \code{lock_TF()}: \cr
@@ -60,13 +66,13 @@
 #' The object \code{X} containing \code{A} is created in the current environment,
 #' and this object cannot be changed. It can only be accessed or removed.
 #'
-#' @seealso [tinycodet_safer()]
+#' @seealso \link{tinycodet_safer}
 #'
 #'
 #' @examples
 #'
 #' lock_TF()
-#' X %<-c% data.frame(x=3, y=2) # this data.frame cannot be changed. Only accessed or removed.
+#' X %<-c% data.frame(x = 3, y = 2) # this data.frame cannot be changed. Only accessed or removed.
 #' X[1, ,drop=FALSE]
 #'
 #'

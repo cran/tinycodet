@@ -12,7 +12,7 @@
 #'  * The \link[=%:=%]{general in-place (mathematical) modification operator}.
 #'
 #'
-#' @seealso [tinycodet_help()]
+#' @seealso \link{tinycodet_help}
 #'
 #'
 #' @examples
@@ -21,16 +21,16 @@
 #'
 #' # in base R:
 #' ifelse( # repetitive, and gives unnecessary warning
-#'   is.na(object>0), -Inf,
+#'   is.na(object > 0), -Inf,
 #'   ifelse(
-#'     object>0,  log(object), object^2
+#'     object > 0,  log(object), object^2
 #'   )
 #' )
 #' mtcars$mpg[mtcars$cyl>6] <- (mtcars$mpg[mtcars$cyl>6])^2 # long
 #'
 #' # with tinycodet:
-#' object |> transform_if(\(x)x>0, log, \(x)x^2, \(x) -Inf) # compact & no warning
-#' mtcars$mpg[mtcars$cyl>6] %:=% \(x)x^2 # short
+#' object |> transform_if(\(x) x > 0, log, \(x) x^2, \(x) -Inf) # compact & no warning
+#' mtcars$mpg[mtcars$cyl > 6] %:=% \(x) x^2 # short
 #'
 #'
 

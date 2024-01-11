@@ -3,36 +3,97 @@ enumerate <- 0 # to count number of tests performed using iterations in loops
 loops <- 0 # to count number of loops
 
 
+errorfun <- function(tt) {
+  if(isTRUE(tt)) print(tt)
+  if(isFALSE(tt)) stop(print(tt))
+}
+
+# basic equality checks ====
+
+x <- list(
+  NA,
+  "abc",
+  "ABC",
+  c("ab", "yz", "AB", "YZ"),
+  "",
+  character(0)
+)
+pattern <- list(
+  NA,
+  "ab",
+  c("ab", "ab"),
+  "AB",
+  c("AB", "AB"),
+  "",
+  character(0)
+)
+
+
+for(iX in 1:length(x)) {
+  for(iP in 1:length(pattern)) {
+    for (iCI in c(TRUE, FALSE)) {
+      expect_equal(
+        x[[iX]] %s{}% s_fixed(pattern[[iP]], case_insensitive = iCI),
+        stringi::stri_detect(x[[iX]], fixed = pattern[[iP]], case_insensitive = iCI)
+      ) |> errorfun()
+      expect_equal(
+        x[[iX]] %s!{}% s_fixed(pattern[[iP]], case_insensitive = iCI),
+        stringi::stri_detect(x[[iX]], fixed = pattern[[iP]], case_insensitive = iCI, negate = TRUE)
+      ) |> errorfun()
+      
+      expect_equal(
+        x[[iX]] %s{}% s_regex(pattern[[iP]], case_insensitive = iCI),
+        stringi::stri_detect(x[[iX]], regex = pattern[[iP]], case_insensitive = iCI)
+      ) |> errorfun()
+      expect_equal(
+        x[[iX]] %s!{}% s_regex(pattern[[iP]], case_insensitive = iCI),
+        stringi::stri_detect(x[[iX]], fixed = pattern[[iP]], case_insensitive = iCI, negate = TRUE)
+      ) |> errorfun()
+      
+      enumerate <- enumerate + 4
+      
+    }
+  }
+}
+
 
 # regex ====
 x.regex <- c('stringi R', 'R STRINGI', '123')
 
 expect_equal(
-  x.regex %s{}% 'R.',stringi::stri_detect_regex(x.regex, 'R.')
+  x.regex %s{}% 'R.',
+  stringi::stri_detect_regex(x.regex, 'R.')
 )
 expect_equal(
-  x.regex %s!{}% 'R.',!stringi::stri_detect_regex(x.regex, 'R.')
-)
-
-expect_equal(
-  x.regex %s{}% '[[:alpha:]]*?',stringi::stri_detect_regex(x.regex, '[[:alpha:]]*?')
-)
-expect_equal(
-  x.regex %s!{}% '[[:alpha:]]*?',!stringi::stri_detect_regex(x.regex, '[[:alpha:]]*?')
+  x.regex %s!{}% 'R.',
+  !stringi::stri_detect_regex(x.regex, 'R.')
 )
 
 expect_equal(
-  x.regex %s{}% '[a-zC1]',stringi::stri_detect_regex(x.regex, '[a-zC1]')
+  x.regex %s{}% '[[:alpha:]]*?',
+  stringi::stri_detect_regex(x.regex, '[[:alpha:]]*?')
 )
 expect_equal(
-  x.regex %s!{}% '[a-zC1]',!stringi::stri_detect_regex(x.regex, '[a-zC1]')
+  x.regex %s!{}% '[[:alpha:]]*?',!
+    stringi::stri_detect_regex(x.regex, '[[:alpha:]]*?')
 )
 
 expect_equal(
-  x.regex %s{}% '( R|RE)',stringi::stri_detect_regex(x.regex, '( R|RE)')
+  x.regex %s{}% '[a-zC1]',
+  stringi::stri_detect_regex(x.regex, '[a-zC1]')
 )
 expect_equal(
-  x.regex %s!{}% '( R|RE)',!stringi::stri_detect_regex(x.regex, '( R|RE)')
+  x.regex %s!{}% '[a-zC1]',
+  !stringi::stri_detect_regex(x.regex, '[a-zC1]')
+)
+
+expect_equal(
+  x.regex %s{}% '( R|RE)',
+  stringi::stri_detect_regex(x.regex, '( R|RE)')
+)
+expect_equal(
+  x.regex %s!{}% '( R|RE)',
+  !stringi::stri_detect_regex(x.regex, '( R|RE)')
 )
 
 expect_equal(
@@ -53,7 +114,7 @@ expect_equal(
 )
 expect_equal(
   x.regex %s!{}% s_regex(p.regex, max_count=1),
-  !stringi::stri_detect_regex(x.regex, p.regex, max_count=1)
+  stringi::stri_detect_regex(x.regex, p.regex, max_count=1, negate = TRUE)
 )
 
 expect_equal(
@@ -62,7 +123,7 @@ expect_equal(
 )
 expect_equal(
   x.regex %s!{}% s_regex(p.regex, max_count=2),
-  !stringi::stri_detect_regex(x.regex, p.regex, max_count=2)
+  stringi::stri_detect_regex(x.regex, p.regex, max_count=2, negate = TRUE)
 )
 
 expect_equal(
@@ -71,7 +132,7 @@ expect_equal(
 )
 expect_equal(
   x.regex %s!{}% s_regex(p.regex, max_count=3),
-  !stringi::stri_detect_regex(x.regex, p.regex, max_count=3)
+  stringi::stri_detect_regex(x.regex, p.regex, max_count=3, negate = TRUE)
 )
 
 
@@ -169,5 +230,3 @@ expect_error(
   x %s!{}% 1,
   pattern = "right hand side must be a character vector or list"
 )
-
-

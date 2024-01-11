@@ -1,4 +1,4 @@
-#' Conditional Sub-setting and In-place Replacer of Unreal Values
+#' Conditional Sub-setting and In-place Replacement of Unreal Values
 #'
 #' @description
 #'
@@ -15,7 +15,7 @@
 #' Thus, \cr
 #' \code{x %unreal =% repl}, \cr
 #' is the same as, \cr
-#' \code{x[is.na(x)|is.nan(x)|is.infinite(x)] <- repl} \cr
+#' \code{x[is.na(x) | is.nan(x) | is.infinite(x)] <- repl} \cr
 #'
 #' @param x a vector, matrix, or array.
 #' @param cond a (possibly anonymous) function that returns a \code{logical} vector
@@ -36,7 +36,7 @@
 #' \code{NA}, \code{NaN}, \code{Inf}, and \code{-Inf} elements are replaced with \code{repl}.
 #'
 #'
-#' @seealso [tinycodet_dry()]
+#' @seealso \link{tinycodet_dry}
 #'
 #' @examples
 #' x <- c(-10:9, NA, NA)
@@ -58,20 +58,20 @@ NULL
 #' @export
 `%[if]%` <- function(x, cond) {
   indx <- cond(x)
-  if(!all(indx %in% c(TRUE, FALSE))) {
-    stop("`cond` must return a logical vector containing only TRUE or FALSE")
+  if(!is.logical(indx)) {
+    stop("`cond` must return a logical vector")
   }
-  return(x[indx])
+  return(x[which(indx)])
 }
 
 #' @rdname subset_if
 #' @export
 `%[!if]%` <- function(x, cond) {
   indx <- cond(x)
-  if(!all(indx %in% c(TRUE, FALSE))) {
-    stop("`cond` must return a logical vector containing only TRUE or FALSE")
+  if(!is.logical(indx)) {
+    stop("`cond` must return a logical vector")
   }
-  return(x[!indx])
+  return(x[which(!indx)])
 }
 
 #' @rdname subset_if

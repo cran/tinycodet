@@ -1,10 +1,10 @@
-#' Pattern Specifications for String Related Infix Operators
+#' Pattern Specifications for String Related Operators
 #'
 #' @description
 #'
 #'
-#' The \link{%s-%} and \link{%s/%} operators,
-#' as well as the string detection operators (\link{str_truth}),
+#' The \link[=str_arithmetic]{%s-%, %s/%, %ss%} operators,
+#' as well as the string search operators (\link{str_search}),
 #' perform pattern matching for some purpose,
 #' where the pattern is given on the right hand side. \cr
 #' When a character vector or string is given on the right hand side,
@@ -17,10 +17,10 @@
 #' \cr
 #' For example:
 #'
-#' * \code{list(regex=p, case_insensitive=FALSE, ...)}
-#' * \code{list(fixed=p, ...)}
-#' * \code{list(coll=p, ...)}
-#' * \code{list(charclass=p, ...)}
+#' * \code{list(regex = p, case_insensitive = FALSE, ...)}
+#' * \code{list(fixed = p, ...)}
+#' * \code{list(coll = p, ...)}
+#' * \code{list(charclass = p, ...)}
 #'
 #' All arguments in the list are simply passed to the
 #' appropriate functions in 'stringi'. \cr
@@ -33,8 +33,8 @@
 #' counts how often regular expression specified in character vector
 #' \code{p} occurs in \code{x}, whereas the following,
 #'
-#' ```{r, echo= TRUE, eval = FALSE}
-#' x %s/% list(fixed=p, case_insensitive=TRUE)
+#' ```{r, echo = TRUE, eval = FALSE}
+#' x %s/% list(fixed = p, case_insensitive = TRUE)
 #' ```
 #'
 #' will do the same,
@@ -57,7 +57,7 @@
 #' 'stringi' infix operators start with "\code{%s}",
 #' though they all have an alias starting with "\code{%stri}".
 #' In analogy to that, the above functions start with "\code{s_}"
-#' rather than "\code{stri_}", as they are all meant for infix operators only. \cr
+#' rather than "\code{stri_}", as they are all meant for operators only. \cr
 #'
 #'
 #'
@@ -74,40 +74,52 @@
 #' @param french,normalization,numeric see \link[stringi]{stri_opts_collator}.
 #' @param uppercase_first,case_level see \link[stringi]{stri_opts_collator}.
 #' @param ... additional arguments not part of the \code{stri_opts} - functions to be passed here. \cr
-#' For example: \code{max_count}
-#'
+#' For example: the \code{at} argument for the \link{str_search} operators.
+#' 
 #'
 #' @returns
-#' A list with arguments to be passed to the appropriate functions.
+#' A list with arguments to be passed to the appropriate operators.
 #'
-#' @seealso [tinycodet_strings()]
+#' @seealso \link{tinycodet_strings}
 #'
 #'
 #' @examples
-#' x <- c(paste0(letters[1:13], collapse=""), paste0(letters[14:26], collapse=""))
+#' x <- c(paste0(letters[1:13], collapse = ""),
+#'        paste0(letters[14:26], collapse = ""))
 #' print(x)
-#' p <- rep("a|e|i|o|u", 2) # same as p <- list(regex=rep("a|e|i|o|u", 2))
+#' p <- rep("a|e|i|o|u", 2) # same as p <- list(regex = rep("a|e|i|o|u", 2))
 #' x %s/% p # count how often vowels appear in each string of vector x.
 #'
-#' x <- c(paste0(letters[1:13], collapse=""), paste0(letters[14:26], collapse=""))
+#' x <- c(paste0(letters[1:13], collapse = ""),
+#'        paste0(letters[14:26], collapse = ""))
 #' print(x)
 #' x %s/% list(regex = rep("A|E|I|O|U", 2), case_insensitive = TRUE)
 #' x %s/% s_regex(rep("A|E|I|O|U", 2), case_insensitive = TRUE)
 #'
 #'
-#' x <- c(paste0(letters[1:13], collapse=""), paste0(letters[14:26], collapse=""))
+#' x <- c(paste0(letters[1:13], collapse = ""),
+#'        paste0(letters[14:26], collapse = ""))
 #' print(x)
-#' p <- list(fixed = c("A", "A"), case_insensitive=TRUE)
+#' p <- list(fixed = c("A", "A"), case_insensitive = TRUE)
 #' x %s{}% p
 #' x %s!{}% p
-#' p <- s_fixed(c("A", "A"), case_insensitive=TRUE)
+#' p <- s_fixed(c("A", "A"), case_insensitive = TRUE)
 #' x %s{}% p
 #' x %s!{}% p
 #'
-#'
+#'x <- c(paste0(letters[1:13], collapse = ""),
+#'       paste0(letters[14:26], collapse = ""), NA)
+#' p <- s_fixed("abc", at = "start")
+#' x %s{}% p
+#' stringi::stri_startswith(x, fixed = "abc") # same as above
+#' 
+#' p <- s_fixed("xyz", at = "end")
+#' x %s{}% p
+#' stringi::stri_endswith(x, fixed = "xyz") # same as above
 
 
-#'
+#' @name s_pattern
+NULL
 
 
 #' @rdname s_pattern
@@ -130,12 +142,14 @@ s_regex <- function(
     time_limit = time_limit,
     stack_limit = stack_limit
   )
-
+  addargs <- list(...)
+  
   out <- c(
     list(regex = p),
     opts,
-    ...
+    addargs
   )
+  # if(!missing(rp)) out <- c(out, list(replacement = rp))
   return(out)
 }
 
@@ -148,11 +162,13 @@ s_fixed <- function(
     case_insensitive = case_insensitive,
     overlap = overlap
   )
+  addargs <- list(...)
   out <- c(
     list(fixed = p),
     opts,
-    ...
+    addargs
   )
+  # if(!missing(rp)) out <- c(out, list(replacement = rp))
   return(out)
 }
 
@@ -180,11 +196,14 @@ s_coll <- function(
     numeric = numeric,
     normalization = normalization
   )
+  addargs <- list(...)
   out <- c(
     list(coll=p),
     opts,
-    ...
+    addargs
   )
+  # if(!missing(rp)) out <- c(out, list(replacement = rp))
+  return(out)
 }
 
 #' @rdname s_pattern
@@ -192,6 +211,11 @@ s_coll <- function(
 s_chrcls <- function(
     p, ...
 ) {
-  list(charclass = p, ...)
+  addargs <- list(...)
+  out <- c(
+    list(charclass = p),
+    addargs
+  )
+  # if(!missing(rp)) out <- c(out, list(replacement = rp))
+  return(out)
 }
-

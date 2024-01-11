@@ -44,7 +44,7 @@ providing a matrix of ordering ranks for \code{mat} would be faster and give mor
 See the examples section. \cr
 \cr
 If \code{mat} is a matrix of non-repeating random integers, i.e. \cr
-\code{mat <- sample(1:length(x)) |> matrix(ncol=ncol(x))}) \cr
+\code{mat <- sample(seq_along(x)) |> matrix(ncol = ncol(x))}) \cr
 then the code \cr
 \code{x \%row~\% mat} \cr
 will randomly shuffle the elements of every row of \code{x},
@@ -55,29 +55,31 @@ will randomly shuffle the elements of every column of \code{x},
 where the shuffling order in each column is independent from the shuffling order in the other columns. \cr
 \cr
 Re-ordering/sorting every row/column of a matrix with these operators
-is generally faster than doing so through loops or apply-like functions.
+is generally faster than doing so through loops or apply-like functions. \cr
+\cr
+Note that these operators strip all attributes except dimensions.
 }
 \examples{
 
 
 # numeric matrix ====
 
-x <- matrix(sample(1:25), nrow=5)
+x <- matrix(sample(1:25), nrow = 5)
 print(x)
 x \%row~\% x # sort elements of every row independently
 x \%row~\% -x # reverse-sort elements of every row independently
 x \%col~\% x # sort elements of every column independently
 x \%col~\% -x # reverse-sort elements of every column independently
 
-x <- matrix(sample(1:25), nrow=5)
+x <- matrix(sample(1:25), nrow = 5)
 print(x)
-mat <- sample(1:length(x)) |> matrix(ncol=ncol(x)) # matrix of non-repeating random integers
+mat <- sample(seq_along(x)) |> matrix(ncol = ncol(x))
 x \%row~\% mat # randomly shuffle every row independently
 x \%col~\% mat # randomise shuffle every column independently
 
 # character matrix ====
 
-x <- matrix(sample(letters, 25), nrow=5)
+x <- matrix(sample(letters, 25), nrow = 5)
 print(x)
 mat <- stringi::stri_rank(as.vector(x)) |> matrix(ncol=ncol(x))
 x \%row~\% mat # sort elements of every row independently
@@ -85,9 +87,9 @@ x \%row~\% -mat # reverse-sort elements of every row independently
 x \%col~\% mat # sort elements of every column independently
 x \%col~\% -mat # reverse-sort elements of every column independently
 
-x <- matrix(sample(letters, 25), nrow=5)
+x <- matrix(sample(letters, 25), nrow = 5)
 print(x)
-mat <- sample(1:length(x)) |> matrix(ncol=ncol(x)) # matrix of non-repeating random integers
+mat <- sample(seq_along(x)) |> matrix(ncol = ncol(x))
 x \%row~\% mat # randomly shuffle every row independently
 x \%col~\% mat # randomise shuffle every column independently
 
@@ -95,5 +97,5 @@ x \%col~\% mat # randomise shuffle every column independently
 
 }
 \seealso{
-\code{\link[=tinycodet_misc]{tinycodet_misc()}}
+\link{tinycodet_misc}
 }

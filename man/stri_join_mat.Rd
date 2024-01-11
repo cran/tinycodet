@@ -55,7 +55,8 @@ stri_join_mat(x, margin = 2)
 #############################################################################
 # sorting characters in strings ====
 
-x <- c(paste(sample(letters), collapse = ""), paste(sample(letters), collapse = ""))
+x <- c(paste(sample(letters), collapse = ""),
+       paste(sample(letters), collapse = ""))
 print(x)
 mat <- strcut_brk(x)
 rank <- stringi::stri_rank(as.vector(mat)) |>  matrix(ncol=ncol(mat))
@@ -84,7 +85,8 @@ stri_c_mat(sorted, margin = 2, sep = " ")
 
 # randomly shuffling sentences ====
 
-x <- c("Hello, who are you? Oh, really?! Cool!", "I don't care. But I really don't.")
+x <- c("Hello, who are you? Oh, really?! Cool!",
+       "I don't care. But I really don't.")
 print(x)
 mat <- strcut_brk(x, "sentence")
 rank <- sample(1:length(mat)) |> matrix(ncol = ncol(mat))
@@ -94,6 +96,6 @@ stri_paste_mat(sorted, margin = 1) # <- another alias for stri_join_mat
 stri_paste_mat(sorted, margin = 2)
 }
 \seealso{
-\code{\link[=tinycodet_strings]{tinycodet_strings()}}
+\link{tinycodet_strings}
 }
 \concept{join_mat}

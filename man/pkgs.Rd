@@ -61,8 +61,8 @@ indicating whether the shared dependencies of the 'tidyverse' should be included
 (\code{TRUE}),
 or not included (\code{FALSE}). \cr
 \bold{Details:} \cr
-'tidyverse' packages tend to have more dependencies than 'tinyverse' and 'fastverse' packages. \cr
-Some of these dependencies are shared across the 'tidyverse'. \cr
+Some of the (often many) dependencies 'tidyverse' packages have
+are shared across the majority of the 'tidyverse'. \cr
 The "official" list of shared dependencies in the 'tidyverse' currently is the following: \cr
 'rlang', 'lifecycle', 'cli', 'glue', and 'withr'.}
 
@@ -112,7 +112,7 @@ One handy use for this function is to, for example,
 globally attach all infix operators from a package using \code{library},
 like so:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(packagename, include.only = pkg_lsf("packagename", type="inops"))
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(packagename, include.only = pkg_lsf("packagename", type = "inops"))
 }\if{html}{\out{</div>}}
 }
 \details{
@@ -149,5 +149,5 @@ pkg_lsf("dplyr", "all")
 O'Brien J., elegantly extract R-package dependencies of a package not listed on CRAN. \emph{Stack Overflow}. (1 September 2023). \url{https://stackoverflow.com/questions/30223957/elegantly-extract-r-package-dependencies-of-a-package-not-listed-on-cran}
 }
 \seealso{
-\code{\link[=tinycodet_import]{tinycodet_import()}}
+\link{tinycodet_import}
 }

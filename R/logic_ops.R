@@ -3,14 +3,16 @@
 #' @description
 #' Additional logic operators: \cr
 #' \cr
-#' The \code{x %xor% y} operator is the "exclusive-or" operator, the same as \link{xor}\code{(x, y)}. \cr
+#' The \code{x %xor% y} operator is the "exclusive-or" operator,
+#' the same as \link{xor}\code{(x, y)}. \cr
 #' \cr
-#' The \code{x %n&%} operator is the "not-and" operator, the same as \code{(!x) & (!y)}. \cr
+#' The \code{x %n&%} operator is the "not-and" operator,
+#' the same as \code{(!x) & (!y)}. \cr
 #' \cr
 #' The \code{x %out% y} operator is the same as \code{!x %in% y}. \cr
 #' \cr
 #' The \code{x %?=% y} operator checks if \code{x} and \code{y}
-#' are **both** unreal or unknown (i.e. NA, NaN, Inf, -Inf). \cr
+#' are \bold{both} unreal or unknown (i.e. NA, NaN, Inf, -Inf). \cr
 #' \cr
 #' The \code{n %=numtype% numtype} operator checks
 #' for every value of numeric vector \code{n}
@@ -63,8 +65,8 @@
 #' x <- c(TRUE, FALSE, TRUE, FALSE, NA, NaN, Inf, -Inf, TRUE, FALSE)
 #' y <- c(FALSE, TRUE, TRUE, FALSE, rep(NA, 6))
 #' outcome <- data.frame(
-#'   x=x, y=y,
-#'   "x %xor% y"=x %xor% y, "x %n&% y" = x %n&% y, "x %?=% y" = x %?=% y,
+#'   x = x, y = y,
+#'   "x %xor% y" = x %xor% y, "x %n&% y" = x %n&% y, "x %?=% y" = x %?=% y,
 #'   check.names = FALSE
 #' )
 #' print(outcome)
@@ -99,13 +101,15 @@ NULL
 #' @rdname logic_ops
 #' @export
 `%xor%` <- function(x, y) {
-  xor(x,y)
+  return(xor(x,y))
 }
 
 #' @rdname logic_ops
 #' @export
 `%n&%` <- function(x, y) {
-  ifelse(is.na(x)|is.na(y), NA, (!x) & (!y))
+  out <- (!x) & (!y)
+  out[is.na(x) | is.na(y)] <- NA
+  return(out)
 }
 
 #' @rdname logic_ops
@@ -126,12 +130,12 @@ NULL
 #' @export
 `%=numtype%` <- function(n, numtype) {
   if(length(numtype) > 1){stop("`numtype` must be a single string")}
-  if(! numtype %in% c("unreal", "~0", "B", "prop", "I", "odd", "even", "R")){
+  if(!numtype %in% c("unreal", "~0", "B", "prop", "I", "odd", "even", "R")){
     stop("numtype not recognised")
   }
   if(!is.numeric(n)) { stop("`n` must be numeric") }
   check.unreal <- is.infinite(n) | is.nan(n) | is.na(n)
-  switch(
+  return(switch(
     numtype,
     "unreal" = check.unreal,
     "~0" = ifelse(check.unreal, FALSE, abs(n) < sqrt(.Machine$double.eps)),
@@ -141,20 +145,21 @@ NULL
     "odd" = ifelse(check.unreal, FALSE, n==round(n) & !(n/2 == round(n/2))),
     "even" = ifelse(check.unreal, FALSE, n==round(n) & (n/2 == round(n/2))),
     "R" = !check.unreal
-  )
+  ))
 }
 
 #' @rdname logic_ops
 #' @export
 `%=strtype%` <- function(s, strtype) {
-  if(length(strtype)>1){stop("`strtype` must be a single string")}
+  if(length(strtype) > 1){stop("`strtype` must be a single string")}
   if(! strtype %in% c("unreal", "empty", "numeric", "special")){
     stop("strtype not recognised")
   }
   if(!is.character(s)) { stop("`s` must be character") }
   check.unreal <- is.na(s)
   s.clean <- trimws(s, which="both")
-  switch(
+  
+  return(switch(
     strtype,
     "empty" = ifelse(
       check.unreal, FALSE, s.clean==""
@@ -167,7 +172,7 @@ NULL
     ),
     "special" = ifelse(
       check.unreal, FALSE,
-      (nchar(s.clean)==nchar(gsub("[[:alnum:]]", "", s.clean))) & (nchar(s.clean)>0)
+      (nchar(s.clean) == nchar(stringi::stri_replace_all_regex(s.clean, "[[:alnum:]]", ""))) & (nchar(s.clean) > 0)
     )
-  )
+  ))
 }

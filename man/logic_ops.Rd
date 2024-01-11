@@ -41,14 +41,16 @@ A logical vector.
 \description{
 Additional logic operators: \cr
 \cr
-The \code{x \%xor\% y} operator is the "exclusive-or" operator, the same as \link{xor}\code{(x, y)}. \cr
+The \code{x \%xor\% y} operator is the "exclusive-or" operator,
+the same as \link{xor}\code{(x, y)}. \cr
 \cr
-The \code{x \%n&\%} operator is the "not-and" operator, the same as \code{(!x) & (!y)}. \cr
+The \code{x \%n&\%} operator is the "not-and" operator,
+the same as \code{(!x) & (!y)}. \cr
 \cr
 The \code{x \%out\% y} operator is the same as \code{!x \%in\% y}. \cr
 \cr
 The \code{x \%?=\% y} operator checks if \code{x} and \code{y}
-are \strong{both} unreal or unknown (i.e. NA, NaN, Inf, -Inf). \cr
+are \bold{both} unreal or unknown (i.e. NA, NaN, Inf, -Inf). \cr
 \cr
 The \code{n \%=numtype\% numtype} operator checks
 for every value of numeric vector \code{n}
@@ -88,8 +90,8 @@ I.e. the string "5.0" can be converted to the the actual number \code{5.0}.
 x <- c(TRUE, FALSE, TRUE, FALSE, NA, NaN, Inf, -Inf, TRUE, FALSE)
 y <- c(FALSE, TRUE, TRUE, FALSE, rep(NA, 6))
 outcome <- data.frame(
-  x=x, y=y,
-  "x \%xor\% y"=x \%xor\% y, "x \%n&\% y" = x \%n&\% y, "x \%?=\% y" = x \%?=\% y,
+  x = x, y = y,
+  "x \%xor\% y" = x \%xor\% y, "x \%n&\% y" = x \%n&\% y, "x \%?=\% y" = x \%?=\% y,
   check.names = FALSE
 )
 print(outcome)

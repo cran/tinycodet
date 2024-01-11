@@ -2,27 +2,39 @@
 % Please edit documentation in R/stri_locate_ith.R
 \name{stri_locate_ith}
 \alias{stri_locate_ith}
+\alias{stri_locate_ith_regex}
+\alias{stri_locate_ith_fixed}
+\alias{stri_locate_ith_coll}
+\alias{stri_locate_ith_charclass}
 \alias{stri_locate_ith_boundaries}
 \title{Locate \eqn{i^{th}} Pattern Occurrence or Text Boundary}
 \usage{
 stri_locate_ith(str, i, ..., regex, fixed, coll, charclass)
 
-stri_locate_ith_boundaries(str, i, ..., type = "character")
+stri_locate_ith_regex(str, pattern, i, ..., opts_regex = NULL)
+
+stri_locate_ith_fixed(str, pattern, i, ..., opts_fixed = NULL)
+
+stri_locate_ith_coll(str, pattern, i, ..., opts_collator = NULL)
+
+stri_locate_ith_charclass(str, pattern, i, merge = TRUE, ...)
+
+stri_locate_ith_boundaries(str, i, ..., opts_brkiter = NULL)
 }
 \arguments{
 \item{str}{a string or character vector.}
 
-\item{i}{a number, or a numeric vector of the same length as \code{str}. \cr
+\item{i}{an integer, or an integer vector of the same length as \code{str}. \cr
 Positive numbers are counting from the left. Negative numbers are counting from the right.
 I.e.:
 \itemize{
-\item \code{stri_locate_ith(str, i=1, ...)} \cr
+\item \code{stri_locate_ith(str, i = 1, ...)} \cr
 gives the position (range) of the first occurrence of a pattern.
-\item \code{stri_locate_ith(str, i=-1, ...)} \cr
+\item \code{stri_locate_ith(str, i = -1, ...)} \cr
 gives the position (range) of the last occurrence of a pattern.
-\item \code{stri_locate_ith(str, i=2, ...)}\cr
+\item \code{stri_locate_ith(str, i = 2, ...)}\cr
 gives the position (range) of the second occurrence of a pattern.
-\item \code{stri_locate_ith(str, i=-2, ...)} \cr
+\item \code{stri_locate_ith(str, i = -2, ...)} \cr
 gives the position (range) of the second-last occurrence of a pattern.
 }
 If \code{abs(i)} is larger than the number of instances,
@@ -34,28 +46,47 @@ and if \code{i <= -3} the first instance will be located. \cr}
 \item{...}{more arguments to be supplied to
 \link[stringi]{stri_locate} or \link[stringi]{stri_locate_all_boundaries}. \cr
 Do not supply the arguments
-\code{omit_no_match}, \code{get_length}, or \code{pattern},
+\code{omit_no_match} or \code{get_length},
 as they are already specified internally.
 Supplying these arguments anyway will result in an error.}
 
-\item{regex, fixed, coll, charclass}{a character vector of search patterns,
+\item{pattern, regex, fixed, coll, charclass}{a character vector of search patterns,
 as in \link[stringi]{stri_locate}. \cr
 \ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_regex.html}{\figure{aboutsearch-regex-darkred.svg}{options: alt='[REGEX]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_regex.html}{about search: regex}} \cr
 \ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_fixed.html}{\figure{aboutsearch-fixed-darkgreen.svg}{options: alt='[FIXED]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_fixed.html}{about search: fixed}} \cr
 \ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_coll.html}{\figure{aboutsearch-coll-pink.svg}{options: alt='[COLL]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_coll.html}{about search: coll}} \cr
 \ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_charclass.html}{\figure{aboutsearch-charclass-lightyellow.svg}{options: alt='[CHARCLASS]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_charclass.html}{about search: charclass}} \cr}
 
-\item{type}{single string;
-either the break iterator type,
-one of \code{character}, \code{line_break}, \code{sentence}, \code{word},
-or a custom set of ICU break iteration rules. Defaults to \code{"character"}. \cr
+\item{opts_regex, opts_fixed, opts_collator, opts_brkiter}{named list used to tune up the selected search engine's settings. \cr
+see \link[stringi]{stri_opts_regex},
+\link[stringi]{stri_opts_fixed},
+\link[stringi]{stri_opts_collator},
+and \link[stringi]{stri_opts_brkiter} \cr
+NULL for the defaults. \cr
+\ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_regex.html}{\figure{aboutsearch-regex-darkred.svg}{options: alt='[REGEX]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_regex.html}{about search: regex}} \cr
+\ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_fixed.html}{\figure{aboutsearch-fixed-darkgreen.svg}{options: alt='[FIXED]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_fixed.html}{about search: fixed}} \cr
+\ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_coll.html}{\figure{aboutsearch-coll-pink.svg}{options: alt='[COLL]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_coll.html}{about search: coll}} \cr
+\ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_charclass.html}{\figure{aboutsearch-charclass-lightyellow.svg}{options: alt='[CHARCLASS]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_charclass.html}{about search: charclass}} \cr
 \ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_boundaries.html}{\figure{aboutsearch-boundaries-blue.svg}{options: alt='[BOUNDARIES]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_boundaries.html}{about search: boundaries}} \cr}
+
+\item{merge}{logical, indicating if charclass locations should be merged or not. \cr
+\bold{Details:} \cr
+For the \code{charclass} pattern type,
+the \code{stri_locate_ith()} function gives the start and end of
+\bold{consecutive} characters by default,
+just like \link[stringi]{stri_locate_all}. \cr
+To give the start and end positions of single characters,
+much like \link[stringi]{stri_locate_first} or \link[stringi]{stri_locate_last},
+set \code{merge = FALSE}.}
 }
 \value{
 The \code{stri_locate_ith()} function returns an integer matrix with two columns,
 giving the start and end positions of the \eqn{i^{th}} matches,
 two \code{NA}s if no matches are found,
 and also two \code{NA}s if \code{str} is \code{NA}.\cr
+\cr
+If an empty string or empty pattern is supplied,
+a warning is given and a matrix with 0 rows is returned. \cr
 \cr
 }
 \description{
@@ -68,51 +99,101 @@ locates the \eqn{i^{th}} text boundary
 (like character, word, line, or sentence boundaries). \cr
 }
 \details{
-\bold{Special note regarding charclass} \cr
-The \code{stri_locate_ith()} function is based on
-\link[stringi]{stri_locate_all}.
-This generally gives results consistent with
-\link[stringi]{stri_locate_first} or \link[stringi]{stri_locate_last},
-but the exception is when \code{charclass} pattern is used. \cr
-Where the functions
-\link[stringi]{stri_locate_first} or \link[stringi]{stri_locate_last}
-give the location of the first or last single character matching the \code{charclass}
-(respectively),
-\link[stringi]{stri_locate_all} gives the start and end of \bold{consecutive} characters. \cr
-The \code{stri_locate_ith()} is in this aspect more in line with
-\link[stringi]{stri_locate_all},
-as it gives the \eqn{i^{th}} set of consecutive characters.
+The 'stringi' functions only support operations on the
+first, last, or all occurrences of a pattern. \cr
+The \code{stri_locate_ith()} function
+allows locating the \eqn{i^{th}} occurrence of a pattern. \cr
+This allows for several workflows
+for operating on the \eqn{i^{th}} pattern occurrence. \cr
+See also the examples section. \cr
+\cr
+\bold{Extract \eqn{i^{th}} Occurrence of a Pattern} \cr
+For extracting the \eqn{i^{th}} pattern occurrence: \cr
+Locate the the \eqn{i^{th}} occurrence using \code{stri_locate_ith()},
+and then extract it using, for example, \link[stringi]{stri_sub}. \cr
+\cr
+\bold{Replace/Transform \eqn{i^{th}} Occurrence of a Pattern} \cr
+For replacing/transforming the \eqn{i^{th}} pattern occurrence:
+\enumerate{
+\item Locate the the \eqn{i^{th}} occurrence using \code{stri_locate_ith()}.
+\item Extract the occurrence using \link[stringi]{stri_sub}.
+\item Transform or replace the extracted sub-strings.
+\item Return the transformed/replaced sub-string back,
+using again \link[stringi]{stri_sub}. \cr \cr
 }
+
+\bold{Capture Groups of \eqn{i^{th}} Occurrence of a Pattern} \cr
+The \code{capture_groups} argument for \code{regex} is not supported within \code{stri_locate_ith()}. \cr
+To capture the groups of the \eqn{i^{th}} occurrences:
+\enumerate{
+\item Use \code{stri_locate_ith()} to locate the \eqn{i^{th}} occurrences without group capture.
+\item Extract the occurrence using \link[stringi]{stri_sub}.
+\item Get the matched group capture on the extracted occurrences using \link[stringi]{stri_match}. \cr \cr
+}
+}
+\section{Warning}{
+
+The \code{stri_locate_ith()} function
+does not support \code{long vectors},
+i.e. character vectors with more than \code{2^31 - 1} strings. \cr
+\cr
+}
+
 \examples{
 
 #############################################################################
 
-# practical example with regex & fixed ====
+# practical example: transform regex pattern ====
 
 # input character vector:
-x <- c(paste0(letters[1:13], collapse=""), paste0(letters[14:26], collapse=""))
+x <- c(paste0(letters[1:13], collapse = ""), paste0(letters[14:26], collapse = ""))
 print(x)
 
-# report ith (second and second-last) vowel locations:
+# locate ith (second and second-last) vowel locations:
 p <- rep("A|E|I|O|U", 2) # vowels
-loc <- stri_locate_ith(x, c(2, -2), regex=p, case_insensitive=TRUE)
+loc <- stri_locate_ith(x, c(2, -2), regex = p, case_insensitive = TRUE)
 print(loc)
 
 # extract ith vowels:
-extr <- stringi::stri_sub(x, from=loc)
+extr <- stringi::stri_sub(x, loc)
 print(extr)
 
-# replace ith vowels with numbers:
-repl <- stringi::stri_replace_all(
-extr, fixed = c("a", "e", "i", "o", "u"), replacement = 1:5, vectorize_all = FALSE
-)
-x <- stringi::stri_sub_replace(x, loc, replacement=repl)
-print(x)
+# transform & replace ith vowels with numbers:
+repl <- chartr("aeiou", "12345", extr)
+stringi::stri_sub(x, loc) <- repl
 
+# result (notice ith vowels are now numbers):
+print(x)
 
 #############################################################################
 
-# practical example with boundaries ====
+
+# practical example: group-capture regex pattern ====
+
+# input character:
+# first group: c(breakfast=eggs, breakfast=bacon)
+# second group: c(lunch=pizza, lunch=spaghetti)
+x <- c('breakfast=eggs;lunch=pizza',
+       'breakfast=bacon;lunch=spaghetti',
+       'no food here') # no group here
+print(x)
+       
+# locate ith=2nd group:
+p <- '(\\\\w+)=(\\\\w+)'
+loc <- stri_locate_ith(x, i = 2, regex = p)
+print(loc)
+
+# extract ith=2nd group:
+extr <- stringi::stri_sub(x, loc)
+print(extr)
+
+# capture ith=2nd group:
+stringi::stri_match(extr, regex = p)
+
+#############################################################################
+
+
+# practical example: replace words using boundaries ====
 
 # input character vector:
 x <- c("good morning and good night",
@@ -127,9 +208,11 @@ print(loc)
 extr <- stringi::stri_sub(x, from=loc)
 print(extr)
 
-# transform and replace words:
+# transform and replace words (notice ith words have inverted case):
 tf <- chartr(extr, old = "a-zA-Z", new = "A-Za-z")
-x <- stringi::stri_sub_replace(x, loc, replacement=tf)
+stringi::stri_sub(x, loc) <- tf
+
+# result:
 print(x)
 
 
@@ -149,10 +232,11 @@ out <- stri_locate_ith(x, 1:10, regex = as.character(1:10))
 cbind(1:10, out)
 
 
-x <- c(paste0(letters[1:13], collapse=""), paste0(letters[14:26], collapse=""))
+x <- c(paste0(letters[1:13], collapse=""),
+       paste0(letters[14:26], collapse = ""))
 print(x)
 p <- rep("a|e|i|o|u",2)
-out <- stri_locate_ith(x, c(-1, 1), regex=p)
+out <- stri_locate_ith(x, c(-1, 1), regex = p)
 print(out)
 substr(x, out[,1], out[,2])
 
@@ -162,10 +246,11 @@ substr(x, out[,1], out[,2])
 # ignore case pattern ====
 
 
-x <- c(paste0(letters[1:13], collapse=""), paste0(letters[14:26], collapse=""))
+x <- c(paste0(letters[1:13], collapse = ""),
+       paste0(letters[14:26], collapse = ""))
 print(x)
 p <- rep("A|E|I|O|U", 2)
-out <- stri_locate_ith(x, c(1, -1), regex=p, case_insensitive=TRUE)
+out <- stri_locate_ith(x, c(1, -1), regex = p, case_insensitive = TRUE)
 substr(x, out[,1], out[,2])
 
 
@@ -173,11 +258,12 @@ substr(x, out[,1], out[,2])
 
 # multi-character pattern ====
 
-x <- c(paste0(letters[1:13], collapse=""), paste0(letters[14:26], collapse=""))
+x <- c(paste0(letters[1:13], collapse = ""),
+       paste0(letters[14:26], collapse = ""))
 print(x)
 # multi-character pattern:
 p <- rep("AB", 2)
-out <- stri_locate_ith(x, c(1, -1), regex=p, case_insensitive=TRUE)
+out <- stri_locate_ith(x, c(1, -1), regex = p, case_insensitive = TRUE)
 print(out)
 substr(x, out[,1], out[,2])
 
@@ -188,10 +274,10 @@ substr(x, out[,1], out[,2])
 # Replacement transformation using stringi ====
 
 x <- c("hello world", "goodbye world")
-loc <- stri_locate_ith(x, c(1, -1), regex="a|e|i|o|u")
-extr <- stringi::stri_sub(x, from=loc)
+loc <- stri_locate_ith(x, c(1, -1), regex = "a|e|i|o|u")
+extr <- stringi::stri_sub(x, from = loc)
 repl <- chartr(extr, old = "a-zA-Z", new = "A-Za-z")
-stringi::stri_sub_replace(x, loc, replacement=repl)
+stringi::stri_sub_replace(x, loc, replacement = repl)
 
 
 #############################################################################
@@ -204,9 +290,9 @@ paste0("The\u00a0above-mentioned    features are very useful. ",
       "good morning, good evening, and good night"
       )
 loc <- stri_locate_ith_boundaries(test, i = c(1, -1), type = "word")
-stringi::stri_sub(test, from=loc)
+stringi::stri_sub(test, from = loc)
 
 }
 \seealso{
-\code{\link[=tinycodet_strings]{tinycodet_strings()}}
+\link{tinycodet_strings}
 }

@@ -72,7 +72,7 @@
 #' \code{import_int(...)(...)}
 #'
 #'
-#' @seealso [tinycodet_import()]
+#' @seealso \link{tinycodet_import}
 #'
 #'
 #' @examples
@@ -86,7 +86,7 @@
 #'
 #' mypaste <- function(x, y) {
 #'   import_LL("stringi", selection = "stri_c")
-#'   stringi::stri_c(x, y)
+#'   stri_c(x, y)
 #'   }
 #' mypaste("hello ", "world")
 #'
@@ -116,7 +116,7 @@ import_LL <- function(
 
 
   # check main_package:
-  if(!is.character(package) | length(package)>1){
+  if(!is.character(package) || length(package) > 1){
     stop("`package` must be a single string")
   }
   .internal_check_pkgs(pkgs=package, lib.loc=lib.loc, abortcall=sys.call())
@@ -189,7 +189,7 @@ import_int <- function(form, lib.loc = .libPaths()) {
   if(!intfun %in% names(ns)) {
     stop(paste0(intfun, " is not an internal function of ", package))
   }
-  get(as.character(intfun), envir = ns, inherits = FALSE)
+  return(get(as.character(intfun), envir = ns, inherits = FALSE))
 }
 
 

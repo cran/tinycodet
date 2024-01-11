@@ -5,7 +5,7 @@
 \alias{\%[if]\%}
 \alias{\%[!if]\%}
 \alias{\%unreal =\%}
-\title{Conditional Sub-setting and In-place Replacer of Unreal Values}
+\title{Conditional Sub-setting and In-place Replacement of Unreal Values}
 \usage{
 x \%[if]\% cond
 
@@ -46,7 +46,7 @@ with replacement value \code{repl}. \cr
 Thus, \cr
 \code{x \%unreal =\% repl}, \cr
 is the same as, \cr
-\code{x[is.na(x)|is.nan(x)|is.infinite(x)] <- repl} \cr
+\code{x[is.na(x) | is.nan(x) | is.infinite(x)] <- repl} \cr
 }
 \examples{
 x <- c(-10:9, NA, NA)
@@ -61,5 +61,5 @@ x \%unreal =\% 0 # same as x[is.na(x)|is.nan(x)|is.infinite(x)] <- 0
 print(x)
 }
 \seealso{
-\code{\link[=tinycodet_dry]{tinycodet_dry()}}
+\link{tinycodet_dry}
 }

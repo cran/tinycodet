@@ -28,7 +28,7 @@
 #' like so:
 #'
 #' ```{r echo = TRUE, eval = FALSE}
-#' library(packagename, include.only = pkg_lsf("packagename", type="inops"))
+#' library(packagename, include.only = pkg_lsf("packagename", type = "inops"))
 #' ```
 #'
 #'
@@ -57,8 +57,8 @@
 #' (\code{TRUE}),
 #' or not included (\code{FALSE}). \cr
 #' \bold{Details:} \cr
-#' 'tidyverse' packages tend to have more dependencies than 'tinyverse' and 'fastverse' packages. \cr
-#' Some of these dependencies are shared across the 'tidyverse'. \cr
+#' Some of the (often many) dependencies 'tidyverse' packages have
+#' are shared across the majority of the 'tidyverse'. \cr
 #' The "official" list of shared dependencies in the 'tidyverse' currently is the following: \cr
 #' 'rlang', 'lifecycle', 'cli', 'glue', and 'withr'.
 #' @param type The type of functions to list. Possibilities:
@@ -99,7 +99,7 @@
 #' @references O'Brien J., elegantly extract R-package dependencies of a package not listed on CRAN. \emph{Stack Overflow}. (1 September 2023). \url{https://stackoverflow.com/questions/30223957/elegantly-extract-r-package-dependencies-of-a-package-not-listed-on-cran}
 #'
 #'
-#' @seealso [tinycodet_import()]
+#' @seealso \link{tinycodet_import}
 #'
 #'
 #'

@@ -49,12 +49,16 @@ function \code{no(x)} is run or scalar \code{no} is returned.
 \item For every value where \code{cond(x)==NA} / \code{cond==NA},
 function \code{other(x)} is run or scalar \code{other} is returned. \cr
 }
+
+For a more \code{ifelse}-like function where
+\code{yes}, \code{no}, and \code{other} are vectors,
+see \code{kit::}\link[kit]{iif}.
 }
 \details{
 Be careful with coercion! For example the following code:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{x <- c("a", "b")
-transform_if(x, \\(x)x=="a", as.numeric, as.logical)
+transform_if(x, \\(x) x == "a", as.numeric, as.logical)
 }\if{html}{\out{</div>}}
 
 returns:
@@ -67,16 +71,16 @@ due to the same character vector being given 2 incompatible classes. \cr
 }
 \examples{
 x <- c(-10:9, NA, NA)
-object <- matrix(x, ncol=2)
+object <- matrix(x, ncol = 2)
 attr(object, "helloworld") <- "helloworld"
 print(object)
 y <- 0
 z <- 1000
 
-object |> transform_if(\(x)x>y, log, \(x)x^2, \(x)-z)
-object |> transform_if(object > y, log, \(x)x^2, -z) # same as previous line
+object |> transform_if(\(x) x > y, log, \(x) x^2, \(x) -z)
+object |> transform_if(object > y, log, \(x) x^2, -z) # same as previous line
 
 }
 \seealso{
-\code{\link[=tinycodet_dry]{tinycodet_dry()}}
+\link{tinycodet_dry}
 }

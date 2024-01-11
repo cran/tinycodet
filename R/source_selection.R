@@ -39,7 +39,7 @@
 #' to expose to the current environment. \cr
 #' For example, to expose the following methods to the current environment, \cr
 #' \code{mymethod.numeric()} and \code{mymethod.character()} from generic \code{mymethod()}, \cr
-#' one could specify \code{fixed= "mymethod"}. \cr
+#' one could specify \code{fixed = "mymethod"}. \cr
 #' `r .mybadge_string("fixed", "darkgreen")` \cr
 #'
 #'
@@ -122,7 +122,7 @@ source_selection <- function(
       "invalid `", substitute(x), "` argument given"
     )
     if(!is.null(x)) {
-      if(!is.character(x) | length(x)==0) {
+      if(!is.character(x) || length(x) == 0) {
         stop(simpleError(error.txt, call = abortcall))
       }
       if(any(!nzchar(x))) {
@@ -150,14 +150,14 @@ source_selection <- function(
         paste(wrong.select, collapse = ", ")
       )
     }
-    for (i in 1:length(select)) {
+    for (i in seq_along(select)) {
       attr(tempenv[[select[i]]], "env") <- tempenv
       assign(select[[i]], tempenv[[select[i]]], envir = parent.frame(n = 1))
     }
   }
 
   # get patterns:
-  if(!is.null(regex) | !is.null(fixed)) {
+  if(!is.null(regex) || !is.null(fixed)) {
     fun_names <- names(tempenv)[unlist(lapply(tempenv, is.function))]
     methodnames <- .source_getmethodnames(fun_names, regex, fixed)
 
@@ -165,7 +165,7 @@ source_selection <- function(
       warning("no appropriate matches found in sourced script")
     }
     if(length(methodnames) > 0) {
-      methods_used <- TRUE
+      # methods_used <- TRUE
       for(meth in methodnames) {
         attr(tempenv[[meth]], "env") <- tempenv
         assign(meth, tempenv[[meth]], envir = parent.frame(n = 1))

@@ -21,7 +21,7 @@
 #' Returns the data directly.
 #' Thus, one can assign the data like so: \code{mydata <- import_data(...)}.
 #'
-#' @seealso [tinycodet_import()]
+#' @seealso \link{tinycodet_import}
 #'
 #'
 #' @examples
@@ -38,7 +38,7 @@ import_data <- function(package, dataname, lib.loc = .libPaths()) {
   # check library:
   .internal_check_lib.loc(lib.loc, sys.call())
 
-  if(length(dataname)>1 | length(package)>1) {
+  if(length(dataname) > 1 || length(package) > 1) {
     stop("only a single dataset and a single package can be given")
   }
   out <- get(

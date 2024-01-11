@@ -92,7 +92,7 @@ bindingIsLocked("stri_sub", environment()) # TRUE
 
 mypaste <- function(x, y) {
   import_LL("stringi", selection = "stri_c")
-  stringi::stri_c(x, y)
+  stri_c(x, y)
   }
 mypaste("hello ", "world")
 
@@ -112,5 +112,5 @@ import_int(
 
 }
 \seealso{
-\code{\link[=tinycodet_import]{tinycodet_import()}}
+\link{tinycodet_import}
 }
