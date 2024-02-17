@@ -26,10 +26,13 @@
 #'  * a matrix of 2 integer columns, with \code{nrow(loc)==length(str)},
 #'  giving the location range of the middle part.
 #'  * a vector of length 2, giving the location range of the middle part.
-#' @param type single string;
-#' either the break iterator type,
-#' one of \code{character}, \code{line_break}, \code{sentence}, \code{word},
-#' or a custom set of ICU break iteration rules. \cr
+#' @param type either one of the following:
+#'  - a single string giving the break iterator type
+#'  (i.e. \code{"character"}, \code{"line_break"}, \code{"sentence"}, \code{"word"},
+#'  or a custom set of ICU break iteration rules).
+#'  - a list with break iteration options,
+#'  like a list produced by \code{stringi::}\link[stringi]{stri_opts_brkiter}.
+#' 
 #' `r .mybadge_string("boundaries", "blue")` \cr
 #' 
 #' @param tolist logical, indicating if \code{strcut_brk} should return a list (\code{TRUE}),
@@ -48,7 +51,7 @@
 #'
 #'
 #' @returns
-#' For the \code{strcut_loc()} function: \cr
+#' For \code{strcut_loc()}: \cr
 #' A character matrix with \code{length(str)} rows and 3 columns,
 #' where for every row \code{i} it holds the following:
 #'
@@ -57,13 +60,17 @@
 #'  * the second column contains the sub_string at \code{loc[i,]},
 #'  or the uncut string if \code{loc[i,]} contains \code{NA};
 #'  * the third and last column contains the sub-string \bold{after} \code{loc[i,]},
-#'  or \code{NA} if \code{loc[i,]} contains \code{NA}. \cr
-#'  \cr
+#'  or \code{NA} if \code{loc[i,]} contains \code{NA}. \cr \cr
 #'
-#' For the \code{strcut_brk()} function: \cr
+#' For \code{strcut_brk(..., tolist = FALSE)}: \cr
 #' A character matrix with \code{length(str)} rows and
 #' a number of columns equal to the maximum number of pieces \code{str} was cut in. \cr
-#' Empty places are filled with \code{NA}.
+#' Empty places are filled with \code{NA}. \cr
+#' \cr
+#' For \code{strcut_brk(..., tolist = TRUE)}: \cr
+#' A list with \code{length(str)} elements,
+#' where each element is a character vector containing the cut string. \cr
+#' \cr
 #'
 #'
 #'
@@ -92,13 +99,19 @@
 #' strcut_brk(test, "word", tolist = TRUE)
 #' strcut_brk(test, "sentence", tolist = TRUE)
 #' 
+#' brk <- stringi::stri_opts_brkiter(
+#'   type = "line"
+#' )
+#' strcut_brk(test, brk)
 
 
 #' @rdname strcut
 #' @export
 strcut_loc <- function(str, loc) {
   # Error handling:
-  loc <- matrix(loc, ncol=2)
+  
+  loc <- .check_loc1(loc, sys.call())
+  
   cc <- !is.na(str) & stats::complete.cases(loc)
   nstr <- length(str)
   nloc <- nrow(loc)
@@ -107,7 +120,7 @@ strcut_loc <- function(str, loc) {
   }
   nloc <- nrow(loc)
   if(nloc != nstr) {
-    stop("`nrow(loc)` must equal to `length(str)` or 1")
+    stop("`loc` has wrong length or dimensions")
   }
   if(all(!cc)) {
     repNA <- rep_len(NA, nstr)
@@ -121,10 +134,10 @@ strcut_loc <- function(str, loc) {
   # FUNCTION:
   x <- str[cc]
   loc <- loc[cc, , drop=FALSE] # new
+  .check_loc2(loc, sys.call())
 
   nx <- length(x)
   nc <- stringi::stri_length(x)
-  loc <- .check_loc(loc, cc, abortcall = sys.call())
 
   prepart <- mainpart <- postpart <- character(nstr) # not nx
   prepart[cc] <- .substr_prepart(x, loc, nx)
@@ -142,33 +155,66 @@ strcut_loc <- function(str, loc) {
 #' @rdname strcut
 #' @export
 strcut_brk <- function(str, type = "character", tolist = FALSE, n = -1L, ...) {
-  if(length(type) > 1) {
-    stop("`type` must be a single string")
-  }
-  if(isFALSE(tolist)) {
-    out <- stringi::stri_split_boundaries(
-      str = str, type = type, simplify = NA, tokens_only = FALSE, n = n, ...
-    )
-  } else if(isTRUE(tolist)) {
-    out <- stringi::stri_split_boundaries(
-      str = str, type = type, simplify = FALSE, tokens_only = FALSE, n = n, ...
-    )
-  } else stop("`tolist` must be either `TRUE` or `FALSE`")
   
-  return(out)
+  if(isFALSE(tolist)) {
+    if(is.list(type)) {
+      return(stringi::stri_split_boundaries(
+        str = str, simplify = NA, tokens_only = FALSE, n = n, ..., opts_brkiter = type
+      ))
+    }
+    else if(is.character(type)) {
+      return(stringi::stri_split_boundaries(
+        str = str, type = type, simplify = NA, tokens_only = FALSE, n = n, ...
+      ))
+    }
+  }
+  if(isTRUE(tolist)) {
+    if(is.list(type)) {
+      return(stringi::stri_split_boundaries(
+        str = str, simplify = FALSE, tokens_only = FALSE, n = n, ..., opts_brkiter = type
+      ))
+    }
+    else if(is.character(type)) {
+      return(stringi::stri_split_boundaries(
+        str = str, type = type, simplify = FALSE, tokens_only = FALSE, n = n, ...
+      ))
+    }
+  }
+  stop("`tolist` must be either `TRUE` or `FALSE`")
 }
 
 
 #' @keywords internal
 #' @noRd
-.check_loc <- function(loc, cc, abortcall) {
-  if(.rcpp_any_nonpos(loc[cc])) {
+.check_loc1 <- function(loc, abortcall) {
+  if(!is.matrix(loc)) {
+    if(length(loc) == 2) {
+      loc <- matrix(loc, ncol = 2)
+    }
+    else {stop(simpleError(
+      "`loc` has wrong length or dimensions", call = abortcall
+    ))}
+  }
+  if(ncol(loc) != 2) {
+    stop(simpleError(
+      "`loc` has wrong length or dimensions", call = abortcall
+    ))
+  }
+  
+  return(loc)
+}
+
+.check_loc2 <- function(loc, abortcall) {
+  
+  # Note: when `loc` is passed here, NAs have already been removed
+  # Therefore, no need to check for NAs
+  
+  if(.C_any_nonpos(as.integer(loc))) {
     stop(simpleError("`loc` can only have strictly positive numbers", call = abortcall))
   }
-  if(any(loc[,2] < loc[,1])) {
+  if(.rcpp_anybad_loc(loc[,1], loc[,2])) {
     stop(simpleError("`loc[, 2] < loc[, 1]`", call = abortcall))
   }
-  return(loc)
 }
 
 

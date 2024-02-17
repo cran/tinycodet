@@ -9,13 +9,7 @@
 
 #' @keywords internal
 #' @noRd
-.rcpp_any_nonpos <- function(indx) {
-    .Call(`_tinycodet_rcpp_any_nonpos`, indx)
-}
-
-#' @keywords internal
-#' @noRd
-.rcpp_any_neg <- function(indx) {
-    .Call(`_tinycodet_rcpp_any_neg`, indx)
+.rcpp_anybad_loc <- function(lower, upper) {
+    .Call(`_tinycodet_rcpp_anybad_loc`, lower, upper)
 }
 

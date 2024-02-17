@@ -37,8 +37,8 @@ gives the position (range) of the second occurrence of a pattern.
 \item \code{stri_locate_ith(str, i = -2, ...)} \cr
 gives the position (range) of the second-last occurrence of a pattern.
 }
-If \code{abs(i)} is larger than the number of instances,
-the first (if \code{i < 0}) or last (if \code{i > 0}) instance will be given. \cr
+If \code{abs(i)} is larger than the number of pattern occurrences \code{n},
+the first (if \code{i < -n}) or last (if \code{i > n}) instance will be given. \cr
 For example: suppose a string has \code{3} instances of some pattern; \cr
 then if \code{i >= 3} the third instance will be located, \cr
 and if \code{i <= -3} the first instance will be located. \cr}
@@ -133,9 +133,9 @@ To capture the groups of the \eqn{i^{th}} occurrences:
 }
 \section{Warning}{
 
-The \code{stri_locate_ith()} function
-does not support \code{long vectors},
-i.e. character vectors with more than \code{2^31 - 1} strings. \cr
+The \code{stri_locate_ith}-functions
+do not support \code{long vectors}
+(i.e. character vectors with more than \code{2^31 - 1} strings). \cr
 \cr
 }
 

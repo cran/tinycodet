@@ -2,13 +2,13 @@
 #'
 #' @description
 #' The \code{%d==%, %d!=% %d<%, %d>%, %d<=%, %d>=%} (in)equality operators
-#' perform decimal (class "double") number truth testing. \cr
+#' perform decimal (type "double") number truth testing. \cr
 #' They are virtually equivalent to the regular (in)equality operators, \cr
 #' \code{==, !=, <, >, <=, >=}, \cr
-#' except for two aspects:
+#' except for 2 aspects:
 #' 
 #'  1) The decimal number (in)equality operators assume that
-#'  if the absolute difference between any two numbers
+#'  if the absolute difference between any 2 numbers
 #'  \code{x} and \code{y}
 #'  is smaller than the Machine tolerance,
 #'  \code{sqrt(.Machine$double.eps)},
@@ -30,13 +30,16 @@
 #' is within the closed interval with bounds defined by \code{bnd}. \cr
 #' The \code{x %d!{}% bnd} operator checks if \code{x}
 #' is outside the closed interval with bounds defined by \code{bnd}. \cr
+#' \cr
+#' Moreover, the function \code{is_wholenumber()} is added, to safely test for whole numbers.
 #'
 #' @param x,y numeric vectors, matrices, or arrays.
 #' @param bnd either a vector of length 2, or a matrix with 2 columns and 1 row,
-#' or else a matrix with 2 columns where \code{nrow(bnd)==length(x)}. \cr
+#' or else a matrix with 2 columns where \code{nrow(bnd)==length(x)}
+#' (or can be recycled to be \code{nrow(bnd)==length(x)}). \cr
 #' The first element/column of \code{bnd} gives the lower bound of the closed interval; \cr
 #' The second element/column of \code{bnd} gives the upper bound of the closed interval. \cr
-#'
+#' @param tol a single, strictly positive number close to zero, giving the tolerance.
 #'
 #' @returns
 #' A logical vector with the same dimensions as \code{x},
@@ -91,6 +94,11 @@
 #' x %d>% y
 #' x %d<=% y
 #' x %d>=% y
+#' 
+#' # is_wholenumber:
+#' is_wholenumber(1:10 + c(0, 0.1))
+#' 
+#' 
 
 #' @name decimal_truth
 NULL
@@ -98,56 +106,57 @@ NULL
 #' @rdname decimal_truth
 #' @export
 `%d==%` <- function(x, y) {
-
+  
   return(abs(x - y) < sqrt(.Machine$double.eps))
 }
 
 #' @rdname decimal_truth
 #' @export
 `%d!=%` <- function(x, y) {
-
+  
   return(abs(x - y) >= sqrt(.Machine$double.eps))
 }
 
 #' @rdname decimal_truth
 #' @export
 `%d<%` <- function(x, y) {
-
-  check <- (x %d!=% y)
-  return((x < y) & check)
+  return((y - x) >= sqrt(.Machine$double.eps))
 }
 
 #' @rdname decimal_truth
 #' @export
 `%d>%` <- function(x, y) {
-
-  check <- (x %d!=% y)
-  return((x > y) & check)
+  return((x - y) >= sqrt(.Machine$double.eps))
 }
 
 #' @rdname decimal_truth
 #' @export
 `%d<=%` <- function(x, y) {
-
-  check <- (x %d==% y)
-  return((x <= y) | check)
+  
+  return((x <= y) | (x %d==% y))
 }
 
 #' @rdname decimal_truth
 #' @export
 `%d>=%` <- function(x, y) {
-
-  check <- (x %d==% y)
-  return((x >= y) | check)
+  
+  return((x >= y) | (x %d==% y))
 }
 
 #' @rdname decimal_truth
 #' @export
 `%d{}%` <- function(x, bnd) {
-  bnd <- matrix(bnd, ncol=2)
-  check <- nrow(bnd)==1 || nrow(bnd)==length(x)
-  if(!check){stop("`nrow(bnd)` must be equal to 1 or equal the number of elements of `x`")}
-  if(any(bnd[,2] < bnd[,1])) {
+  if(!is.matrix(bnd)) {
+    if(length(bnd) == 2L) {
+      bnd <- matrix(bnd, ncol = 2L)
+    } else {
+      stop(
+        "`bnd` must be a matrix with 2 columns or vector with 2 elements"
+      )
+    }
+  }
+  # NAs must be ignored
+  if(any(bnd[,2] < bnd[,1], na.rm = TRUE)) {
     stop("`bnd[, 2] < bnd[, 1]`")
   }
   return(x %d>=% bnd[,1] & x %d<=% bnd[,2])
@@ -156,12 +165,31 @@ NULL
 #' @rdname decimal_truth
 #' @export
 `%d!{}%` <- function(x, bnd) {
-  bnd <- matrix(bnd, ncol=2)
-  check <- nrow(bnd)==1 || nrow(bnd)==length(x)
-  if(!check){stop("`nrow(bnd)` must be equal to 1 or equal the number of elements of `x`")}
-  if(any(bnd[,2] < bnd[,1])) {
+  if(!is.matrix(bnd)) {
+    if(length(bnd) == 2L) {
+      bnd <- matrix(bnd, ncol = 2L)
+    } else {
+      stop(
+        "`bnd` must be a matrix with 2 columns or vector with 2 elements"
+      )
+    }
+  }
+  # NAs must be ignored
+  if(any(bnd[,2] < bnd[,1], na.rm = TRUE)) {
     stop("`bnd[, 2] < bnd[, 1]`")
   }
   return(x %d<% bnd[,1] | x %d>% bnd[,2])
 }
 
+
+#' @rdname decimal_truth
+#' @export
+is_wholenumber <- function(x, tol = sqrt(.Machine$double.eps)) {
+  if(!is.numeric(tol) || length(tol) != 1L) {
+    stop("`tol` must be a single, strictly positive number close to 0")
+  }
+  if(tol >= 1 || tol <= 0) {
+    stop("`tol` must be a single, strictly positive number close to 0")
+  }
+  return(abs(x - round(x)) < tol)
+}

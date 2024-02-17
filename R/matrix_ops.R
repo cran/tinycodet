@@ -9,8 +9,8 @@
 #' \cr
 #' The \code{x %col~% mat} operator re-orders the elements of every column,
 #' each column ordered independently from the other columns, of matrix \code{x},
-#' according to the ordering ranks given in matrix \code{mat}. \cr
-#' \cr
+#' according to the ordering ranks given in matrix \code{mat}. \cr \cr
+#' 
 #'
 #' @param x a matrix
 #' @param mat a matrix with the same dimensions as \code{x},
@@ -42,8 +42,9 @@
 #' Re-ordering/sorting every row/column of a matrix with these operators
 #' is generally faster than doing so through loops or apply-like functions. \cr
 #' \cr
-#' Note that these operators strip all attributes except dimensions.
-#'
+#' Note that these operators strip all attributes except dimensions. \cr
+#' \cr
+#' 
 #' @returns
 #' A modified matrix.
 #'
@@ -66,7 +67,7 @@
 #' print(x)
 #' mat <- sample(seq_along(x)) |> matrix(ncol = ncol(x))
 #' x %row~% mat # randomly shuffle every row independently
-#' x %col~% mat # randomise shuffle every column independently
+#' x %col~% mat # randomly shuffle every column independently
 #'
 #' # character matrix ====
 #'

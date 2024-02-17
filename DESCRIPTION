@@ -1,6 +1,6 @@
 Package: tinycodet
 Title: Functions to Help in your Coding Etiquette
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: person("Tony", "Wilkes", role = c("aut", "cre", "cph"),
                   email = "tony_a_wilkes@outlook.com",
                   comment = c(ORCID = "0000-0001-9498-8379"))
@@ -25,8 +25,8 @@ URL: https://github.com/tony-aw/tinycodet/,
 BugReports: https://github.com/tony-aw/tinycodet/issues/
 Language: en-gb
 NeedsCompilation: yes
-Packaged: 2024-01-11 10:12:56 UTC; Tony
+Packaged: 2024-02-17 11:53:28 UTC; Tony
 Author: Tony Wilkes [aut, cre, cph] (<https://orcid.org/0000-0001-9498-8379>)
 Maintainer: Tony Wilkes <tony_a_wilkes@outlook.com>
 Repository: CRAN
-Date/Publication: 2024-01-11 10:40:02 UTC
+Date/Publication: 2024-02-17 12:10:02 UTC
