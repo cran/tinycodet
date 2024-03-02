@@ -11,8 +11,14 @@ introduces a few functions:
 \item \link[=\%d==\%]{Safer decimal (in)equality testing}.
 \item \link[=as_int]{Atomic type casting without stripping attributes}.
 \item The \link{lock_TF} function to
-set and lock \code{T} and \code{F} to \code{TRUE} and \code{FALSE}.
+set and lock \code{T} and \code{F} to \code{TRUE} and \code{FALSE},
+respectively.
 \item The \link{\%<-c\%} operator to assign locked constants.
+\item \link{form} to construct a formula with safer environment specification.
+\item Standard evaluated versions of some common expression-evaluation functions: \cr
+\link{with_pro} and \link{aes_pro}.
+\item \link{safer_partialmatch} to set options for
+safer dollar, arguments, and attribute matching. \cr \cr
 }
 }
 \examples{
