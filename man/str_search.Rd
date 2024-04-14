@@ -36,7 +36,8 @@ See also the Details section. \cr
 \itemize{
 \item if \code{i} is not given or \code{NULL},
 \code{strfind()} extracts all found pattern occurrences.
-\item if \code{i = "all"}, \code{strfind()} locates all found pattern occurrences.
+\item if \code{i} is the string "all",
+\code{strfind()} locates all found pattern occurrences.
 \item if \code{i} is an integer,
 \code{strfind()} locates the \eqn{i^{th}} pattern occurrences. \cr
 See the \code{i} argument in \link{stri_locate_ith} for details.
@@ -66,22 +67,24 @@ For \code{strfind()}, \code{rt} must not be specified.}
 \item{value}{a character vector giving the replacement values.}
 }
 \value{
-The \code{x \%s{}\% p} and \code{x \%s!{}\% p} operators
-return logical vectors. \cr
+For the \code{x \%s{}\% p} and \code{x \%s!{}\% p} operators: \cr
+Return logical vectors. \cr
 \cr
-\code{strfind()} returns a list with extractions of all found patterns. \cr
+For \code{strfind()}: \cr
+Returns a list with extractions of all found patterns. \cr
 \cr
-\code{strfind(..., i = "all")} returns a list with all found pattern locations. \cr
+For \code{strfind(..., i = "all")}: \cr
+Returns a list with all found pattern locations. \cr
 \cr
-\code{strfind(..., i = i)},
-with \code{i} being an integer,
-returns an integer matrix with two columns,
+For \code{strfind(..., i = i)} with integer vector \code{i}: \cr
+Returns an integer matrix with two columns,
 giving the start and end positions of the \eqn{i^{th}} matches,
 two NAs if no matches are found, and also two \code{NA}s if str is \code{NA}. \cr
 \cr
-\code{strfind() <- value} returns nothing,
+For \code{strfind() <- value}: \cr
+Returns nothing,
 but performs in-place replacement
-(but not by reference, technically speaking)
+(using R's default in-place semantics)
 of the found patterns in variable \code{x}. \cr \cr
 }
 \description{
@@ -115,9 +118,9 @@ It functions as follows:
 \item \code{strfind()} finds all pattern matches,
 and returns the extractions of the findings in a list,
 just like \link[stringi]{stri_extract_all}.
-\item \code{strfind(..., i = "all")} finds all pattern matches,
-and reports the locations of the findings in a list,
-just like \link[stringi]{stri_locate_all}.
+\item \code{strfind(..., i = "all" )},
+finds all pattern matches
+like \link[stringi]{stri_locate_all}.
 \item \code{strfind(..., i = i)}, where \code{i} is an integer vector,
 locates the \eqn{i^{th}} occurrence of a pattern,
 and reports the locations in a matrix,
@@ -162,16 +165,16 @@ etc. \cr
 Notice that for single replacement, i.e. \code{rt = "first"} or \code{rt = "last"},
 it makes no sense to distinguish between vectorized or dictionary replacement,
 since then only a single occurrence is being replaced per string. \cr
-See examples below. \cr \cr
+See examples below. \cr
+\cr
 }
-\section{Warning}{
-
+\note{
 \verb{strfind()<-} performs in-place replacement. \cr
 Therefore, the character vector or string to perform replacement on,
 must already exist as a variable. \cr
 So take for example the following code:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{strfind("hello", p = "e") <- "a" # this obviously does not work
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{strfind("hello", p = "e") <- "a" # this obviously does not work
 
 y <- "hello"
 strfind(y, p = "e") <- "a" # this works fine
@@ -179,9 +182,8 @@ strfind(y, p = "e") <- "a" # this works fine
 }\if{html}{\out{</div>}}
 
 In the above code, the first \verb{strfind()<-} call does not work,
-because the string needs to exist as a variable. \cr
+because the string needs to exist as a variable. \cr \cr
 }
-
 \examples{
 
 # example of \%s{}\% and \%s!{}\% ====
@@ -233,6 +235,7 @@ stringi::stri_endswith(x, fixed = "cba") # same as above
 p <- s_fixed("zyx", at = "start")
 x \%s{}\% p
 stringi::stri_startswith(x, fixed = "zyx") # same as above
+
 
 
 #############################################################################
@@ -310,8 +313,6 @@ p <- s_fixed("the", case_insensitive = TRUE)
 rp <- "Some Other"
 strfind(x, p, rt = "last") <- rp
 print(x)
-
-
 
 
 

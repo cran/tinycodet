@@ -9,14 +9,20 @@
 
 #' @keywords internal
 #' @noRd
-.rcpp_convert_neg_i <- function(n_matches, i) {
-    .Call(`_tinycodet_rcpp_convert_neg_i`, n_matches, i)
+.rcpp_n_matches <- function(lst) {
+    .Call(`_tinycodet_rcpp_n_matches`, lst)
 }
 
 #' @keywords internal
 #' @noRd
-.rcpp_convert_pos_i <- function(n_matches, i) {
-    .Call(`_tinycodet_rcpp_convert_pos_i`, n_matches, i)
+.rcpp_convert_i0 <- function(n_matches, i) {
+    .Call(`_tinycodet_rcpp_convert_i0`, n_matches, i)
+}
+
+#' @keywords internal
+#' @noRd
+.rcpp_convert_i1 <- function(n_matches, i) {
+    .Call(`_tinycodet_rcpp_convert_i1`, n_matches, i)
 }
 
 #' @keywords internal

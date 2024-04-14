@@ -27,7 +27,7 @@ or else a character vector with regular expressions. \cr
 \ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_charclass.html}{\figure{aboutsearch-charclass-lightyellow.svg}{options: alt='[CHARCLASS]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_charclass.html}{about search: charclass}} \cr}
 
 \item{brk}{a list with break iteration options,
-like a list produced by \code{stringi::}\link[stringi]{stri_opts_brkiter}. \cr
+like a list produced by \link[stringi]{stri_opts_brkiter}. \cr
 \ifelse{html}{\href{https://stringi.gagolewski.com/rapi/about_search_boundaries.html}{\figure{aboutsearch-boundaries-blue.svg}{options: alt='[BOUNDARIES]'}}}{\href{https://stringi.gagolewski.com/rapi/about_search_boundaries.html}{about search: boundaries}} \cr}
 }
 \value{
@@ -69,7 +69,6 @@ see \link{strcut_brk} and \link{strcut_loc}.
 \cr
 }
 \examples{
-
 
 x <- c(paste0(letters[1:13], collapse = ""),
        paste0(letters[14:26], collapse = ""))
