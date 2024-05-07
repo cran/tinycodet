@@ -27,7 +27,7 @@ If a string, argument \code{alias} must be specified also.
 
 \item{alias}{the alias object as created by the \link{import_as} function. \cr}
 
-\item{x}{the object/function to be tested.}
+\item{x}{an existing object (i.e. an assigned variable or a locked constant) to be tested.}
 
 \item{which}{The attributes to list. If \code{NULL}, all attributes will be returned. \cr
 Possibilities: "pkgs", "conflicts", "args", and "ordered_object_names".}
@@ -74,7 +74,7 @@ Gives the names of the objects in the alias, in the order as they were imported.
 For conflicting objects, the last imported ones are used for the ordering. \cr
 Note that if argument \code{re_exports} is \code{TRUE},
 re-exported functions are imported when the main package is imported,
-thus changing this order slightly.
+thus changing this order slightly. \cr \cr
 }
 \description{
 The \code{help.import()} function

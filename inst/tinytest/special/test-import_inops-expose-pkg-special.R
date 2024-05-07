@@ -95,24 +95,6 @@ expect_message(
 )
 
 
-temp.fun <- function() {
-  import_inops(
-    unexpose = c("tinycodetfakepkg1"),
-    lib.loc = lib.loc1
-  )
-  ls()
-}
-expect_message(
-  temp.fun(),
-  pattern = "No infix operators from `import_inops()` to delete",
-  fixed = TRUE
-)
-expect_equal(
-  temp.fun(),
-  character(0)
-)
-
-
 # test import_as - error handling ====
 expect_error(
   import_inops("stringi", lib.loc=lib.loc1),

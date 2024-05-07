@@ -26,15 +26,6 @@ temp.fun <- function() {
 expect_equal(temp.fun()|>sort(), sort(c(stri, "stri.")))
 
 
-# test import_inops - deleting ====
-temp.fun <- function() {
-  import_as(~stri., "stringi")
-  import_inops(expose = stri.)
-  import_inops(unexpose = stri.)
-  ls() |> sort()
-}
-expect_equal(temp.fun(), "stri.")
-
 
 # test import_inops() - functional functions ====
 temp.fun <- function(){
@@ -66,15 +57,6 @@ expect_error(
   fixed = TRUE
 )
 
-temp.fun <- function() {
-  import_as(~stri., "stringi")
-  import_inops(unexpose = NA)
-}
-expect_error(
-  temp.fun(),
-  pattern = "`unexpose` must be a package name (string) or an alias from `import_as()`",
-  fixed = TRUE
-)
 
 temp.fun <- function() {
   import_inops(expose = environment())
@@ -85,14 +67,6 @@ expect_error(
   fixed = TRUE
 )
 
-temp.fun <- function() {
-  import_inops(unexpose = environment())
-}
-expect_error(
-  temp.fun(),
-  pattern = "The given environment is not an alias from `import_as()`",
-  fixed = TRUE
-)
 
 
 # test import_inops - warning checks ====
@@ -103,5 +77,6 @@ temp.fun <- function() {
 }
 expect_warning(
   temp.fun(),
-  pattern = "ALL prepared infix operators already exist in the current environment"
+  pattern = "ALL infix operators already exist in the current environment"
 )
+

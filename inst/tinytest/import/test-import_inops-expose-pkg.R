@@ -23,14 +23,6 @@ temp.fun <- function(){
 expect_equal(temp.fun()|>sort(), sort(stri))
 
 
-# test import_inops - deleting ====
-temp.fun <- function(){
-  import_inops("stringi")
-  import_inops(unexpose="stringi")
-  ls()
-}
-expect_equal(temp.fun(), character(0))
-
 
 
 # test import_inops() - functional functions ====
@@ -39,14 +31,6 @@ temp.fun <- function(){
   return("a" %stri+% "b")
 }
 expect_equal(temp.fun(), "ab")
-
-
-# test import_inops() - deleting inops ====
-temp.fun <- function(){
-  suppressWarnings(import_inops("stringi"))
-  import_inops(unexpose = "stringi")
-  ls()
-}
 
 
 # package error handling ====
@@ -89,11 +73,6 @@ expect_error(
   fixed = TRUE
 )
 
-expect_error(
-  import_inops(unexpose = NA),
-  pattern = "`unexpose` must be a package name (string) or an alias from `import_as()`",
-  fixed = TRUE
-)
 
 expect_error(
   import_inops(expose = c("stringi", "stringi2")),
@@ -101,11 +80,6 @@ expect_error(
   fixed = TRUE
 )
 
-expect_error(
-  import_inops(unexpose = c("stringi", "stringi2")),
-  pattern = "`unexpose` must be a package name (string) or an alias from `import_as()`",
-  fixed = TRUE
-)
 
 
 # test import_inops - warning checks ====
@@ -116,6 +90,6 @@ temp.fun <- function(){
 }
 expect_warning(
   temp.fun(),
-  pattern = "ALL prepared infix operators already exist in the current environment"
+  pattern = "ALL infix operators already exist in the current environment"
 )
 

@@ -5,12 +5,10 @@
 #' introduces a few functions:
 #'
 #'  * \link[=%d==%]{Safer decimal (in)equality testing}.
-#'  * \link[=as_int]{Atomic type casting without stripping attributes}.
 #'  * The \link{lock_TF} function to
 #'  set and lock \code{T} and \code{F} to \code{TRUE} and \code{FALSE},
 #'  respectively.
 #'  * The \link{%<-c%} operator to assign locked constants.
-#'  * \link{form} to construct a formula with safer environment specification.
 #'  * Standard evaluated versions of some common expression-evaluation functions: \cr
 #'   \link{with_pro} and \link{aes_pro}.
 #'  * \link{safer_partialmatch} to set options for

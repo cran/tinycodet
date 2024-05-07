@@ -11,10 +11,7 @@
 #' through the usage of one-sided formulas,
 #' instead of non-standard evaluation,
 #' tidy evaluation,
-#' or similar programmatically unfriendly evaluations. \cr
-#' \cr
-#' For creating formulas without capturing environments,
-#' see \link{form}. \cr \cr
+#' or similar programmatically unfriendly evaluations. \cr \cr
 #' 
 #'
 #'
@@ -23,7 +20,7 @@
 #' @param data a list, environment, or data.frame.
 #' @param form a one-sided formula giving the expression to evaluate in \code{with_pro}. \cr
 #' If the formula has an environment,
-#' that environment is used to find any variables not present in `data`.
+#' that environment is used to find any variables or objects not present in `data`.
 #' 
 #'
 #'
@@ -73,7 +70,7 @@
 #' 
 #' 
 #'
-#' @seealso \link{tinycodet_safer}, \link{form}
+#' @seealso \link{tinycodet_safer}
 #'
 #' @return
 #' For `with_pro()`: see \link[base]{with}. \cr
@@ -87,14 +84,14 @@
 #' d <- import_data("ggplot2", "mpg")
 #'
 #' # mutate data:
-#' myform <- form(~ displ + cyl + cty + hwy)
+#' myform <- ~ displ + cyl + cty + hwy
 #' d$mysum <- with_pro(d, myform)
 #' summary(d)
 #'
 #' # plotting data:
-#' x <- form("cty")
-#' y <- form(~ sqrt(hwy))
-#' color <- form(~ drv)
+#' x <- ~ cty
+#' y <- ~ sqrt(hwy)
+#' color <- ~ drv
 #'
 #' ggplot2::ggplot(d, aes_pro(x, y, color = color)) +
 #'   ggplot2::geom_point()

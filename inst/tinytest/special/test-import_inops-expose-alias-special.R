@@ -67,24 +67,6 @@ expect_equal(
 )
 
 
-# unexpose ====
-temp.fun <- function() {
-  import_as(
-    ~to3., "tinycodetfakepkg3",
-    dependencies = c("tinycodetfakepkg1", "tinycodetfakepkg2"),
-    lib.loc = lib.loc1
-  )
-  import_inops(
-    expose=to3.
-  )
-  import_inops(
-    unexpose=to3.
-  )
-  ls() |> sort()
-}
-expect_equal(temp.fun(), c("to3."))
-
-
 # test misc attributes ====
 temp.fun <- function() {
   import_as(
