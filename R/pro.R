@@ -65,8 +65,6 @@
 #' In other words: Non-Standard Evaluation. \cr
 #' \cr
 #' Regular Standard Evaluation does not have the above problem. \cr
-#' Standard evaluation in 'R' is not limited to atomic objects like character vectors;
-#' formulas can also be used.
 #' 
 #' 
 #'
@@ -103,7 +101,7 @@
 #' @rdname pro
 #' @export
 with_pro <- function(data, form) {
-  is_formula <- inherits(form, "formula") && is.call(form) && form[[1]] == quote(`~`)
+  is_formula <- .internal_is_formula(form)
   if(!is_formula) stop("`form` must be a formula")
   if(length(form) != 2) stop("improper formula given")
   if(!is.recursive(data)) stop("`data` must be a recursive object")
@@ -127,8 +125,7 @@ aes_pro <- function(...) {
   lst <- list(...)
   
   # error checks:
-  is_formula <- function(x) inherits(x, "formula") && is.call(x) && x[[1]] == quote(`~`)
-  check <- vapply(lst, is_formula, logical(1))
+  check <- vapply(lst, .internal_is_formula, logical(1))
   if(any(!check)) stop("formula inputs must be given")
   check <- lengths(lst)
   if(any(check != 2)) stop("improper formula given")

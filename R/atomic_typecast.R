@@ -1,4 +1,4 @@
-#' Atomic Type Casting Without Stripping Attributes
+#' Atomic Type Casting With Names and Dimensions Preserved
 #'
 #' @description
 #' Atomic type casting in R is generally performed using the functions
@@ -8,10 +8,10 @@
 #' \cr
 #' Converting an object between atomic types using these functions
 #' strips the object of its attributes,
-#' including attributes such as names and dimensions. \cr
+#' including (dim)names and dimensions. \cr
 #' \cr
 #' The functions provided here by the 'tinycodet' package
-#' preserve all attributes - except the "class" attribute. \cr
+#' preserve the dimensions, dimnames, and names. \cr
 #' \cr
 #' The functions are as follows: \cr
 #'
@@ -27,92 +27,87 @@
 #' (or a similar object where all elements share the same type).
 #' @param ... further arguments passed to or from other methods.
 #'
+#'
+#' 
+#'
 #' @returns
-#' The converted object.
+#' The converted object. \cr \cr
 #'
 #' @seealso \link{tinycodet_dry}
 #'
-#' @examples
-#' x <- c(rep(0, 2), seq(0, 2.5, by=0.5)) |> matrix(ncol=2)
-#' colnames(x) <- c("one", "two")
-#' attr(x, "test") <- "test"
-#' print(x)
-#'
-#' # notice that in all following, attributes (except class) are conserved:
-#' as_bool(x)
-#' as_int(x)
-#' as_dbl(x)
-#' as_chr(x)
+#' @example inst/examples/atomic_typecast.R
 #'
 #' 
 #'
 #'
 
-#' @name atomic_conversions
+#' @name atomic_typecast
 NULL
 
 
-#' @rdname atomic_conversions
+#' @rdname atomic_typecast
 #' @export
 as_bool <- function(x, ...) {
-  temp.attr <- attributes(x)
-  temp.attr[["class"]] <- NULL
+  temp.attr <- .attr_typecast(x)
   out <- as.logical(x, ...)
   attributes(out) <- temp.attr
   return(out)
 }
 
 
-#' @rdname atomic_conversions
+#' @rdname atomic_typecast
 #' @export
 as_int <- function(x, ...) {
-  temp.attr <- attributes(x)
-  temp.attr[["class"]] <- NULL
+  temp.attr <- .attr_typecast(x)
   out <- as.integer(x, ...)
   attributes(out) <- temp.attr
   return(out)
 }
 
 
-#' @rdname atomic_conversions
+#' @rdname atomic_typecast
 #' @export
 as_dbl <- function(x, ...) {
-  temp.attr <- attributes(x)
-  temp.attr[["class"]] <- NULL
+  temp.attr <- .attr_typecast(x)
   out <- as.double(x, ...)
   attributes(out) <- temp.attr
   return(out)
 }
 
 
-#' @rdname atomic_conversions
+#' @rdname atomic_typecast
 #' @export
 as_chr <- function(x, ...) {
-  temp.attr <- attributes(x)
-  temp.attr[["class"]] <- NULL
+  temp.attr <- .attr_typecast(x)
   out <- as.character(x, ...)
   attributes(out) <- temp.attr
   return(out)
 }
 
 
-#' @rdname atomic_conversions
+#' @rdname atomic_typecast
 #' @export
 as_cplx <- function(x, ...) {
-  temp.attr <- attributes(x)
-  temp.attr[["class"]] <- NULL
+  temp.attr <- .attr_typecast(x)
   out <- as.complex(x, ...)
   attributes(out) <- temp.attr
   return(out)
 }
 
 
-#' @rdname atomic_conversions
+#' @rdname atomic_typecast
 #' @export
 as_raw <- function(x, ...) {
-  temp.attr <- attributes(x)
-  temp.attr[["class"]] <- NULL
+  temp.attr <- .attr_typecast(x)
   out <- as.raw(x, ...)
   attributes(out) <- temp.attr
   return(out)
+}
+
+
+#' @keywords internal
+#' @noRd
+.attr_typecast <- function(x) {
+  temp.attr <- attributes(x)[c("dim", "dimnames", "names")]
+  return(temp.attr)
 }

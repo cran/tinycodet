@@ -43,8 +43,16 @@ The second element/column of \code{bnd} gives the upper bound of the closed inte
 \item{tol}{a single, strictly positive number close to zero, giving the tolerance.}
 }
 \value{
+For the \code{\%d...\%} operators: \cr
 A logical vector with the same dimensions as \code{x},
-indicating the result of the element by element comparison.
+indicating the result of the element by element comparison. \cr
+NOTE: \code{Inf} by \code{Inf} and \code{-Inf} by \code{-Inf} comparisons with
+the \code{\%d...\%} operators return \code{NA}. \cr
+\cr
+For \code{is_wholenumber()}: \cr
+A logical vector with the same dimensions as \code{x},
+indicating the result of the element by element comparison. \cr
+NOTE: \code{Inf}, \code{-Inf}, \code{NaN} and \code{NA} all return \code{NA} for \code{is_wholenumber()}.
 }
 \description{
 The \code{\%d==\%, \%d!=\% \%d<\%, \%d>\%, \%d<=\%, \%d>=\%} (in)equality operators
@@ -60,12 +68,12 @@ is smaller than the Machine tolerance,
 \code{sqrt(.Machine$double.eps)},
 then \code{x} and \code{y}
 should be consider to be equal. \cr
-For example: \code{0.1*7 == 0.7} returns \code{FALSE}, even though they are equal,
+For example: \code{(0.1 * 7) == 0.7} returns \code{FALSE}, even though they are equal,
 due to the way decimal numbers are stored in programming languages like 'R' and  'Python'. \cr
-But \code{0.1*7 \%d==\% 0.7} returns \code{TRUE}.
+But \code{(0.1 * 7) \%d==\% 0.7} returns \code{TRUE}. \cr
 \item Only numeric input is allowed, so characters are not coerced to numbers. \cr
 I.e. \code{1 < "a"} gives \code{TRUE}, whereas \code{1 \%d<\% "a"} gives an error. \cr
-For character equality testing, see \link[stringi]{\%s==\%} from the 'stringi' package.
+For character equality testing, see \link[stringi]{\%s==\%} from the 'stringi' package. \cr
 }
 
 Thus these operators provide safer decimal number (in)equality tests. \cr
@@ -81,22 +89,28 @@ is outside the closed interval with bounds defined by \code{bnd}. \cr
 Moreover, the function \code{is_wholenumber()} is added, to safely test for whole numbers.
 }
 \examples{
+
 x <- c(0.3, 0.6, 0.7)
-y <- c(0.1*3, 0.1*6, 0.1*7)
-print(x); print(y)
+y <- c(0.1 * 3, 0.1 * 6, 0.1 * 7)
+print(x)
+print(y)
+
 x == y # gives FALSE, but should be TRUE
-x!= y # gives TRUE, should be FALSE
+x != y # gives TRUE, should be FALSE
 x > y # not wrong
 x < y # gives TRUE, should be FALSE
-x \%d==\% y # here it's done correctly
+
+# same as above, but here the results are correct:
+x \%d==\% y # correct
 x \%d!=\% y # correct
 x \%d<\% y # correct
 x \%d>\% y # correct
 x \%d<=\% y # correct
 x \%d>=\% y # correct
 
+# check if numbers are in closed interval:
 x <- c(0.3, 0.6, 0.7)
-bnd <- cbind(x-0.1, x+0.1)
+bnd <- cbind(x - 0.1, x + 0.1)
 x \%d{}\% bnd
 x \%d!{}\% bnd
 
@@ -111,7 +125,7 @@ x \%d<=\% y
 x \%d>=\% y
 
 x <- 1L:5L
-y <- x+1
+y <- x + 1L
 x \%d==\% y
 x \%d!=\% y
 x \%d<\% y
@@ -120,7 +134,7 @@ x \%d<=\% y
 x \%d>=\% y
 
 x <- 1L:5L
-y <- x-1
+y <- x - 1L
 x \%d==\% y
 x \%d!=\% y
 x \%d<\% y
@@ -130,8 +144,6 @@ x \%d>=\% y
 
 # is_wholenumber:
 is_wholenumber(1:10 + c(0, 0.1))
-
-
 }
 \seealso{
 \link{tinycodet_safer}

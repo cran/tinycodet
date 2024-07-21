@@ -2,8 +2,9 @@
 #'
 #' @description
 #' The \code{pkgs %installed in% lib.loc} operator
-#' checks if one or more packages (\code{pkgs}) exist
-#' in a library location (\code{lib.loc}), without loading the packages. \cr
+#' checks if one or more given packages (\code{pkgs}) exist
+#' in the given library paths (\code{lib.loc}),
+#' without loading the packages. \cr
 #' The syntax of this operator forces the user to make it
 #' syntactically explicit
 #' where to look for installed R-packages. \cr
@@ -28,7 +29,8 @@
 #' like so:
 #'
 #' ```{r echo = TRUE, eval = FALSE}
-#' library(packagename, include.only = pkg_lsf("packagename", type = "inops"))
+#' y <- pkg_lsf("packagename", type = "inops")
+#' library(packagename, include.only = y)
 #' ```
 #'
 #'
@@ -64,7 +66,7 @@
 #' @param type The type of functions to list. Possibilities:
 #'  * \code{"inops"} or \code{"operators"}: Only infix operators.
 #'  * \code{"regfuns"}: Only regular functions (thus excluding infix operators).
-#'  * \code{"all"}: All functions, both regular functions and infix operators.
+#'  * \code{"all"}: All functions, both regular functions and infix operators. \cr \cr
 #'
 #' @details
 #' For \code{pkg_get_deps()}: \cr
@@ -81,20 +83,25 @@
 #'  \item "Depends";
 #'  \item "Imports".
 #' }
-#' The unique (thus non-repeating) package names are then returned to the user.
+#' The unique (thus non-repeating)
+#' package names are then returned to the user. \cr \cr
 #'
 #'
 #' @returns
 #' For  \code{pkgs %installed in% lib.loc}: \cr
-#' Returns a named logical vector, with the names giving the package names,
-#' and where the value \code{TRUE} indicates a package is installed,
-#' and the value \code{FALSE} indicates a package is not installed. \cr
+#' Returns a named logical vector. \cr
+#' The names give the package names. \cr
+#' The value \code{TRUE} indicates a package is installed in `lib.loc`. \cr
+#' The value \code{FALSE} indicates a package is not installed in `lib.loc`. \cr
+#' The value \code{NA} indicates a package is not actually a separate package,
+#' but base/core 'R'
+#' (i.e. 'base', 'stats', etc.). \cr
 #' \cr
-#' For \code{pkg_get_deps()}: \cr
+#' For \code{pkg_get_deps()} and \code{pkg_get_deps_minimal()}: \cr
 #' A character vector of direct dependencies, without duplicates. \cr
 #' \cr
 #' For \code{pkg_lsf()}: \cr
-#' Returns a character vector of exported function names in the specified package.
+#' Returns a character vector of exported function names in the specified package. \cr \cr
 #'
 #' @references O'Brien J., elegantly extract R-package dependencies of a package not listed on CRAN. \emph{Stack Overflow}. (1 September 2023). \url{https://stackoverflow.com/questions/30223957/elegantly-extract-r-package-dependencies-of-a-package-not-listed-on-cran}
 #'
@@ -124,30 +131,26 @@ NULL
 `%installed in%` <- function(pkgs, lib.loc) {
 
   if(!is.character(pkgs)) {
-    stop("`pkgs` must be a character vector of package names")
+    stop("left hand side must be a character vector of package names")
   }
   misspelled_pkgs <- pkgs[pkgs != make.names(pkgs)]
-  if(isTRUE(length(misspelled_pkgs)>0)) {
+  if(length(misspelled_pkgs) > 0L) {
     stop(
       "You have misspelled the following packages:",
       "\n",
       paste0(misspelled_pkgs, collapse = ", ")
     )
   }
-
+   
   .internal_check_lib.loc(lib.loc, sys.call())
 
-  tempfun <- function(pkg, lib.loc){
-    out <- tryCatch(
-      {find.package(pkg, lib.loc = lib.loc)},
-      error = function(cond) FALSE,
-      warning = function(cond) FALSE
-    )
-    if(is.character(out) && !isFALSE(out)) { out <- TRUE }
-    return(out)
+  tempfun <- function(pkg, lib.loc) {
+    out <- find.package(package = pkg, lib.loc = lib.loc, quiet = TRUE)
+    return(length(out) > 0L)
   }
-
-  out <- sapply(pkgs, \(x)tempfun(x, lib.loc = lib.loc), USE.NAMES = TRUE)
+  out <- vapply(pkgs, \(x)tempfun(x, lib.loc = lib.loc), logical(1), USE.NAMES = TRUE)
+  out[pkgs %in% .internal_list_coreR()] <- NA
+  
   return(out)
 }
 
@@ -197,7 +200,7 @@ pkg_get_deps_minimal <- function(package, lib.loc = .libPaths(), deps_type = c("
 #' @rdname pkgs
 #' @export
 pkg_lsf <- function(package, type, lib.loc = .libPaths()) {
-  if(length(package)>1){
+  if(length(package) > 1L){
     stop("only a single package can be given")
   }
 
@@ -209,13 +212,13 @@ pkg_lsf <- function(package, type, lib.loc = .libPaths()) {
   }
 
   ns <- .internal_prep_Namespace(package, lib.loc, abortcall = sys.call()) |> names()
-  if(type=="inops" || type=="operators") {
-    out <- grep("%|:=", ns, value = TRUE)
+  if(type == "inops" || type == "operators") {
+    out <- .internal_grep_inops(ns, type = 2)
   }
-  if(type=="regfuns") {
-    out <- grep("%|:=", ns, value = TRUE, invert = TRUE)
+  if(type == "regfuns") {
+    out <- .internal_grep_inops(ns, type = 2, invert = TRUE)
   }
-  if(type=="all") {
+  if(type == "all") {
     out <- ns
   }
   return(out)
@@ -227,12 +230,15 @@ pkg_lsf <- function(package, type, lib.loc = .libPaths()) {
     package, lib.loc, type,
     base, recom, rstudioapi, shared_tidy
 ) {
-  # based of https://stackoverflow.com/questions/30223957/elegantly-extract-r-package-dependencies-of-a-package-not-listed-on-cran
+  # based on https://stackoverflow.com/questions/30223957/elegantly-extract-r-package-dependencies-of-a-package-not-listed-on-cran
   dcf <- read.dcf(file.path(system.file("DESCRIPTION", package = package, lib.loc = lib.loc)))
+  # note: using system.file() here above in case of multiple libPaths
+  # and also to deal with prioritizing loaded vs installed packages
   jj <- intersect(type, colnames(dcf))
-  val <- unlist(strsplit(dcf[, jj], ","), use.names=FALSE)
+  val <- unlist(strsplit(dcf[, jj], ","), use.names = FALSE)
   val <- gsub("\\s.*", "", trimws(val))
   depends <- val[val != "R"]
+  
   if(!base) {
     depends <- setdiff(depends, .internal_list_coreR())
   }
@@ -245,5 +251,6 @@ pkg_lsf <- function(package, type, lib.loc = .libPaths()) {
   if(!shared_tidy) {
     depends <- setdiff(depends, .internal_list_tidyshared())
   }
+  
   return(depends)
 }

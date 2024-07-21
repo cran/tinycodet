@@ -77,9 +77,8 @@ pversion_check4mismatch <- function(pkgs = NULL, lib.loc = .libPaths()) {
   
   
   if(length(pkgs) > 0) {
-    versions_loaded <- lapply(pkgs, getNamespaceVersion) |> unlist()
-    versions_lib <- lapply(pkgs, \(x)as.character(utils::packageVersion(x, lib.loc = lib.loc))) |>
-      unlist()
+    versions_loaded <- vapply(pkgs, getNamespaceVersion, character(1L))
+    versions_lib <- vapply(pkgs, \(x) .pversion_installed(x, lib.loc), character(1L))
     versions_compare <- mapply(utils::compareVersion, versions_loaded, versions_lib)
     ind <- which(versions_compare != 0)
     if(length(ind) > 0) {
@@ -98,6 +97,7 @@ pversion_check4mismatch <- function(pkgs = NULL, lib.loc = .libPaths()) {
   
   return(NULL)
 }
+
 
 #' @rdname pversion
 #' @export
@@ -120,9 +120,8 @@ pversion_report <- function(pkgs = NULL, lib.loc = .libPaths()) {
   
   
   if(length(pkgs) > 0) {
-    versions_loaded <- lapply(pkgs, getNamespaceVersion) |> unlist()
-    versions_lib <- lapply(pkgs, \(x)as.character(utils::packageVersion(x, lib.loc = lib.loc))) |>
-      unlist()
+    versions_loaded <- vapply(pkgs, getNamespaceVersion, character(1L))
+    versions_lib <- vapply(pkgs, \(x) .pversion_installed(x, lib.loc), character(1L))
     versions_compare <- mapply(utils::compareVersion, versions_loaded, versions_lib)
     versions_compare <- as.logical(versions_compare == 0)
     tab <- data.frame(
@@ -146,4 +145,8 @@ pversion_report <- function(pkgs = NULL, lib.loc = .libPaths()) {
 }
 
 
-
+#' @keywords internal
+#' @noRd
+.pversion_installed <- function(pkg, lib.loc) {
+  return(as.character(utils::packageVersion(pkg, lib.loc = lib.loc)))
+}

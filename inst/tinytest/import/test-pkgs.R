@@ -1,4 +1,23 @@
 
+# installed in ===
+expect_equal(
+  c("foo", "stringi", "stats") %installed in% .libPaths(),
+  setNames(c(FALSE, TRUE, NA), c("foo", "stringi", "stats"))
+)
+expect_equal(
+  "stringi" %installed in% .libPaths(),
+  c("stringi" = TRUE)
+)
+expect_equal(
+  "foo" %installed in% .libPaths(),
+  c("foo" = FALSE)
+)
+expect_equal(
+  "stats" %installed in% .libPaths(),
+  c("stats" = NA)
+)
+
+
 # pkg_lsf ====
 ns <- loadNamespace("stringi") |> as.list(all.names=TRUE, sorted=TRUE)
 names_exported <- names(ns[[".__NAMESPACE__."]][["exports"]])

@@ -8,8 +8,7 @@
 #' all under the same alias.
 #' The specified alias,
 #' containing the exported functions from the specified packages,
-#' will be placed in the current environment
-#' (like the global environment, or the environment within a function). \cr
+#' will be placed in the current environment. \cr
 #'
 #' @param alias a syntactically valid non-hidden name giving the alias object
 #' where the package(s) are to be imported into. \cr
@@ -20,9 +19,12 @@
 #' Core R (i.e. "base", "stats", etc.) is not allowed.
 #' @param re_exports \code{TRUE} or \code{FALSE}.
 #'  * If \code{re_exports = TRUE} the re-exports from the \code{main_package}
-#'  are added to the alias together with the main package.
-#'  This is the default, as it is analogous to the behaviour of base R's \link{::} operator.
-#'  * If \code{re_exports = FALSE}, these re-exports are not added together with the main package.
+#'  (including those exported from Core R)
+#'  are added to the alias together with the main package. \cr
+#'  This is the default,
+#'  as it is analogous to the behaviour of base R's \link{::} operator. \cr
+#'  * If \code{re_exports = FALSE},
+#'  these re-exports are not added together with the main package. \cr
 #'  The user can still import the packages under the alias from which the re-exported functions came from,
 #'  by specifying them in the \code{dependencies} argument.
 #' @param dependencies an optional character vector,
@@ -44,7 +46,7 @@
 #' @param lib.loc character vector specifying library search path
 #' (the location of R library trees to search through). \cr
 #' The \code{lib.loc} argument would usually be \code{.libPaths()}. \cr
-#' See also \link[base]{loadNamespace}.
+#' See also \link[base]{loadNamespace}. \cr \cr
 #'
 #'
 #' @details
@@ -123,11 +125,12 @@
 #'
 #'
 #' \bold{Other Details} \cr
-#' The \code{import_as()} function
-#' does not support importing base/core R under an alias. \cr
 #' Packages that appear in the "Suggests" or "Enhances" fields of packages
 #' are not considered dependencies or extensions. \cr
-#' No more than 10 packages are allowed to be imported under a single alias. \cr
+#' \cr
+#' No more than 10 packages
+#' (ignoring re-exports)
+#' are allowed to be imported under a single alias. \cr
 #' \cr
 #'
 #'
@@ -137,13 +140,13 @@
 #' will be created. \cr
 #' This object, referred to as the "(package) alias object",
 #' will contain the exported functions from the specified package(s). \cr
-#' The alias object will be placed in the current environment
-#' (like the global environment, or the environment within a function). \cr
+#' The alias object will be placed in the current environment. \cr
 #' \cr
 #' To use, for example, function "some_function()" from alias "alias.", use: \cr
 #' \code{alias.$some_function()} \cr
 #' To see the special attributes of this alias object, use \link{attr.import}. \cr
-#' To "unimport" the package alias object, simply remove it (i.e. \code{rm(list = "alias.")}). \cr
+#' To "unimport" the package alias object, simply remove it
+#' (i.e. \code{rm(list = "alias.")}). \cr
 #'
 #' @seealso \link{tinycodet_import}
 #'
@@ -172,7 +175,7 @@ import_as <- function(
 ) {
   
   # Check alias:
-  alias_is_formula <- inherits(alias, "formula") && is.call(alias) && alias[[1]] == "~"
+  alias_is_formula <- .internal_is_formula(alias)
   if(!is.character(alias) && !alias_is_formula) {
     stop("`alias` needs to be either a string or a formula")
   }

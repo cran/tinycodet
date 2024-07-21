@@ -81,6 +81,10 @@ cuts every string into individual text breaks
 \cr
 }
 \details{
+The \code{strcut_} functions provide a short and concise way to cut strings into pieces,
+without removing the delimiters,
+which is an operation that lies at the core of virtually all boundaries-operations in 'stringi'. \cr
+\cr
 The main difference between the \code{strcut_} - functions
 and \link[stringi]{stri_split} /  \link[base]{strsplit},
 is that the latter generally removes the delimiter patterns in a string when cutting,
@@ -96,13 +100,13 @@ x <- rep(paste0(1:10, collapse = ""), 10)
 print(x)
 loc <- stri_locate_ith(x, 1:10, fixed = as.character(1:10))
 strcut_loc(x, loc)
-strcut_loc(x, c(5,5))
+strcut_loc(x, c(5, 5))
 strcut_loc(x, c(NA, NA))
 strcut_loc(x, c(5, NA))
 strcut_loc(x, c(NA, 5))
 
 test <- "The\u00a0above-mentioned    features are very useful. " \%s+\%
-"Spam, spam, eggs, bacon, and spam. 123 456 789"
+  "Spam, spam, eggs, bacon, and spam. 123 456 789"
 strcut_brk(test, "line")
 strcut_brk(test, "word")
 strcut_brk(test, "sentence")

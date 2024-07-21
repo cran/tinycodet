@@ -70,25 +70,30 @@ The "official" list of shared dependencies in the 'tidyverse' currently is the f
 \itemize{
 \item \code{"inops"} or \code{"operators"}: Only infix operators.
 \item \code{"regfuns"}: Only regular functions (thus excluding infix operators).
-\item \code{"all"}: All functions, both regular functions and infix operators.
+\item \code{"all"}: All functions, both regular functions and infix operators. \cr \cr
 }}
 }
 \value{
 For  \code{pkgs \%installed in\% lib.loc}: \cr
-Returns a named logical vector, with the names giving the package names,
-and where the value \code{TRUE} indicates a package is installed,
-and the value \code{FALSE} indicates a package is not installed. \cr
+Returns a named logical vector. \cr
+The names give the package names. \cr
+The value \code{TRUE} indicates a package is installed in \code{lib.loc}. \cr
+The value \code{FALSE} indicates a package is not installed in \code{lib.loc}. \cr
+The value \code{NA} indicates a package is not actually a separate package,
+but base/core 'R'
+(i.e. 'base', 'stats', etc.). \cr
 \cr
-For \code{pkg_get_deps()}: \cr
+For \code{pkg_get_deps()} and \code{pkg_get_deps_minimal()}: \cr
 A character vector of direct dependencies, without duplicates. \cr
 \cr
 For \code{pkg_lsf()}: \cr
-Returns a character vector of exported function names in the specified package.
+Returns a character vector of exported function names in the specified package. \cr \cr
 }
 \description{
 The \code{pkgs \%installed in\% lib.loc} operator
-checks if one or more packages (\code{pkgs}) exist
-in a library location (\code{lib.loc}), without loading the packages. \cr
+checks if one or more given packages (\code{pkgs}) exist
+in the given library paths (\code{lib.loc}),
+without loading the packages. \cr
 The syntax of this operator forces the user to make it
 syntactically explicit
 where to look for installed R-packages. \cr
@@ -112,7 +117,8 @@ One handy use for this function is to, for example,
 globally attach all infix operators from a package using \code{library},
 like so:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(packagename, include.only = pkg_lsf("packagename", type = "inops"))
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{y <- pkg_lsf("packagename", type = "inops")
+library(packagename, include.only = y)
 }\if{html}{\out{</div>}}
 }
 \details{
@@ -130,7 +136,8 @@ means the package names are extracted from the fields in the following order:
 \item "Depends";
 \item "Imports".
 }
-The unique (thus non-repeating) package names are then returned to the user.
+The unique (thus non-repeating)
+package names are then returned to the user. \cr \cr
 }
 \examples{
 \dontshow{if ("dplyr" \%installed in\% .libPaths()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

@@ -1,10 +1,24 @@
+# tinycodet 0.5.3
+* **Behaviour change:** the atomic typecasting functions now preserve names, dimensions, and dimnames (instead of all attributes), to be more in line with most of base 'R'.
+* **Behaviour change:** `pkgs %installed in% lib.loc` will now return `NA` for "packages" that are part of core 'R' (i.e. 'base', 'stats', etc.).
+* **Behaviour change:** All decimal truth testing operators now always give `NA` when `Inf` is compared with `Inf`, or when `-Inf` is compared to `-Inf`.
+* Streamlined the internal code of the decimal truth testing operators.
+* Added `%s><%` and `%s<>%` as aliases for `%sget%` and `%strim%`, respectively.
+* Removed some superfluous text in the import system documentation.
+* Re-written one 'C++' script to pure 'C' code.
+* Some of the internal 'C' code now support long vectors, when appropriate.
+* Small speed improvement in some of the internal code.
+* Added new fake packages to the special tests, to perform more thorough tests on the `pversion_` - functions.
+* Added even more tests.
+
+
 # tinycodet 0.5.0
 * **Feature Improvement:** `help.import()` now directly evaluates the arguments under `help()` if both arguments `i` and `alias` are missing.
 * **Feature Improvement:** re_exports in `import_as()` can now include functions from core R if necessary, except 'base'.
 * **Performance Improvement:** Replaced some of the internal code in the import system with 'C++' code via 'Rcpp' for some performance improvement.
 * **Bug fix:** Fixed a (small) bug, where `help.import()` sometimes gave an unnecessary error, when searching topics of un-exported objects or non-functions via an alias object instead of searching functions directly.
 * **Bug fix:** Fixed a (small) bug where class names were sometimes inconsistently assigned to functions and infix operators exposed by the 'tinycodet' import system.
-* **Removed Feature:** Removed the `form()` function, as its use-case is a bit too rare to justify having a whole function for it (with all the tests and maintenance that come with it). I rarely remove functions; this is an exception.
+* **Removed Feature:** Removed the `form()` function, as its use-case is too rare to justify having a whole function for it (with all the tests and maintenance that come with it). I rarely remove functions; this is an exception.
 * Fixed some mistakes in the documentation.
 * Added more tests.
 * `help.import()` can now also be called without any arguments, just like the original `help()` function.
@@ -24,7 +38,7 @@
 
 # tinycodet 0.4.5
 * Slight speed improvement of `stri_locate_ith()`.
-* **New Features**: Added the following functions to the "safer functionality" category: `form()`, `aes_pro()`, `with_pro()`, and `safer_partialmatch()`. Naturally, added tests for these new functions.
+* New Features: Added the following functions to the "safer functionality" category: form(), `aes_pro()`, `with_pro()`, and `safer_partialmatch()`. Naturally, added tests for these new functions.
 
 
 # tinycodet 0.4.1
@@ -51,7 +65,7 @@ in the documentation of the `stri_locate_ith()` function.
 * The `strcut_brk()` function now includes the `tolist` argument to return a list. Moreover, the `n` argument may now also be specified (`n = -1L` by default).
 * **More safety checks:** Improved safety against malformed conditions in the `transform_if()` function. `stri_locate_ith()` now gives a warning when an empty string or pattern is given. The `help.import()` function now gives an error if neither `topic/package` nor `i/alias` is supplied, instead of just silently doing nothing. The `%sget%` and `%strim%` operators now give an explicit error message if the arguments do not have proper lengths.
 * **Internal Re-write:** `stri_locate_ith()` has now been partially re-written, and now includes 'C++' code, making it a bit faster. Also cleaned up the internal code for some other functions here and there.
-* **Added dependency:** 'Rcpp' is now added as an dependency, due to the aforementioned partial re-write in 'C++'.
+* **Added dependency:** 'Rcpp' is now added as a dependency, due to the aforementioned partial re-write in 'C++'.
 * **New Features:** Added `%ss%` to the collection of string arithmetic operators, and added the `strfind()<-` method to the string search operators.
 One can now supply the `at` argument in the list of the right-hand side for the `%s{}%` operator. Supplying `at = "start"` will check if the pattern appears at the start of a string. Supplying `at = "end"` will check if the pattern appears at the end of a string.
 * **Optimization:** Managed to optimise `stri_locate_ith()` even further. Optimised the 'subset_if' operators a bit more. Also optimised the `%n&%`, `%sget%`, `%strim%`, and `%=strtype%` operators a bit more.
