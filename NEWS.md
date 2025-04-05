@@ -1,3 +1,8 @@
+# tinycodet 0.5.6
+* **Behaviour change:** The import functions no longer import `.Primitive` or `.Internal` functions, to comply with CRAN.
+* **Behaviour change:** `import_as()` now allows hidden (i.e. dot-prefixed) names for `alias` objects.
+
+
 # tinycodet 0.5.4
 * **Performance improvement:** Even more performance improvement for `stri_locate_ith()`; it now internally uses 'C' code instead of 'C++'.
 

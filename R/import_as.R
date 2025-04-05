@@ -10,7 +10,7 @@
 #' containing the exported functions from the specified packages,
 #' will be placed in the current environment. \cr
 #'
-#' @param alias a syntactically valid non-hidden name giving the alias object
+#' @param alias a syntactically valid name giving the alias object
 #' where the package(s) are to be imported into. \cr
 #' This name can be given either as a single string (i.e. \code{"alias."}),
 #' or as a one-sided formula with a single term (i.e. \code{~ alias.}).
@@ -103,7 +103,7 @@
 #' \bold{Alias Naming Recommendation} \cr
 #' To keep package alias object names easily distinguishable from other objects
 #' that can also be subset with the \link[base]{$} operator,
-#' I recommend ending (not starting!) all alias names
+#' I recommend ending (or starting, if you want to hide it from `ls()`) all alias names
 #' with a dot (\code{.}) or underscore (\code{_}). \cr
 #' \cr
 #' \cr
@@ -132,6 +132,8 @@
 #' (ignoring re-exports)
 #' are allowed to be imported under a single alias. \cr
 #' \cr
+#' Primitive functions (see \link[base]{is.primitive}) are not imported. \cr
+#' \cr
 #'
 #'
 #' @returns
@@ -151,15 +153,11 @@
 #' @seealso \link{tinycodet_import}
 #'
 #'
-#' @examplesIf all(c("data.table", "tidytable") %installed in% .libPaths())
-#' all(c("data.table", "tidytable") %installed in% .libPaths())
+#' @examplesIf "data.table" %installed in% .libPaths()
+#' "data.table" %installed in% .libPaths()
 #'
-#' import_as( # this creates the 'tdt.' object
-#'   "tdt.", "tidytable", dependencies = "data.table"
-#' )
-#' # same as:
-#' import_as(
-#'   ~ tdt., "tidytable", dependencies = "data.table"
+#' import_as( # this creates the 'dt.' object
+#'   ~ dt., "data.table"
 #' )
 #'
 #'
@@ -195,7 +193,8 @@ import_as <- function(
     length(alias) == 1,
     isTRUE(nchar(alias) > 0),
     isFALSE(alias %in% c("T", "F")),
-    !startsWith(alias, ".")
+    !startsWith(alias, "._"),
+    !startsWith(alias, "_.")
   )
   if(!isTRUE(all(check_proper_alias))){
     stop("Syntactically invalid name for object `alias`")

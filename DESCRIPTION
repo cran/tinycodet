@@ -1,6 +1,6 @@
 Package: tinycodet
 Title: Functions to Help in your Coding Etiquette
-Version: 0.5.4
+Version: 0.5.6
 Authors@R: person("Tony", "Wilkes", role = c("aut", "cre", "cph"),
                   email = "tony_a_wilkes@outlook.com",
                   comment = c(ORCID = "0000-0001-9498-8379"))
@@ -18,7 +18,7 @@ Description: Adds some functions to help in your coding etiquette.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LinkingTo: Rcpp
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: tinytest, ggplot2, mgcv, nlme, collapse, kit, knitr,
         rmarkdown, roxygen2
 Depends: R (>= 4.1.0)
@@ -28,8 +28,8 @@ URL: https://github.com/tony-aw/tinycodet/,
 BugReports: https://github.com/tony-aw/tinycodet/issues/
 Language: en-gb
 NeedsCompilation: yes
-Packaged: 2025-01-09 18:15:20 UTC; Tony
+Packaged: 2025-04-05 19:15:10 UTC; Tony
 Author: Tony Wilkes [aut, cre, cph] (<https://orcid.org/0000-0001-9498-8379>)
 Maintainer: Tony Wilkes <tony_a_wilkes@outlook.com>
 Repository: CRAN
-Date/Publication: 2025-01-09 18:30:01 UTC
+Date/Publication: 2025-04-05 19:40:02 UTC
