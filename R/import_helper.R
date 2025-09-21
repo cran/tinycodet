@@ -114,11 +114,11 @@
 #'
 #'
 
-#' @name x.import
+#' @name import_helper
 NULL
 
 
-#' @rdname x.import
+#' @rdname import_helper
 #' @export
 help.import <- function(..., i, alias) {
 
@@ -177,7 +177,7 @@ help.import <- function(..., i, alias) {
 
 
 
-#' @rdname x.import
+#' @rdname import_helper
 #' @export
 is.tinyimport <- function(x) {
   
@@ -194,7 +194,7 @@ is.tinyimport <- function(x) {
 }
 
 
-#' @rdname x.import
+#' @rdname import_helper
 #' @export
 attr.import <- function(alias, which = NULL) {
   if(!.is.tinyalias(as.character(substitute(alias)), env = parent.frame(n = 1))) {
