@@ -1,7 +1,7 @@
-20c76c433aaeb8d41eee436e0fb2c2f1 *DESCRIPTION
+96b068386213204fada77dad9604044a *DESCRIPTION
 791c47ccea4c6db5a6e31ed3a4a9a7b0 *LICENSE
-5aaab18ae805aee3e1e421987234ea16 *NAMESPACE
-4493e95552c4aed2de37e69935b00ef9 *NEWS.md
+b109c3611cb62f9c46649a097de9b1da *NAMESPACE
+4fa77e671d6c26ed4889d0dd3d78d9eb *NEWS.md
 7a2f6ff1f46f6bf15ef1e2ff3c868eee *R/RcppExports.R
 cb81eacdf1f6a177b9ae407b6dbaaa40 *R/aaa0_tinycodet_help.R
 a4c97fafdd2ebba441b6af116e567688 *R/aaa1_tinycodet_safer.R
@@ -9,7 +9,7 @@ b985c770a3625f6a64e1246e3a6bfc5a *R/aaa2_tinycodet_import.R
 53f68292a28c50fca3b5d7b7f7e0775a *R/aaa3_tinycodet_strings.R
 066f952e70a9e94432d8784b3127137e *R/aaa4_tinycodet_dry.R
 bb546ab95dec6a92aaad92bc9cda07e2 *R/aaa5_tinycodet_misc.R
-e98626540995cd4ca0306640fc89ad66 *R/decimal_truth.R
+9b5ab87936c5910ca74ed9918b25c0b7 *R/decimal_truth.R
 3fbec31b572258d1505bbcedbc7a702b *R/import_as.R
 e0d5c15315ec8c960088025658d4c2c4 *R/import_data.R
 292abc61a31f79759cc0bfee2996279c *R/import_helper.R
@@ -19,12 +19,13 @@ e0d5c15315ec8c960088025658d4c2c4 *R/import_data.R
 d84ef559b9a55b340cc0d63e25a31c05 *R/import_inops_unexpose.R
 cc248a5e3f2ee9aa7f60c1859756a415 *R/import_misc.R
 b3f06e31300b6d934ef3bf68ec0d9eb7 *R/internal_functions.R
+fbd49f48d9cc987c3039e095aa5a169b *R/internal_typecasting.R
 27ced57cdb45a9c3b9c83cc3b3b27fc5 *R/lock.R
 fe5e2ccd8e49b69db2fa8e7e3563663d *R/logic_ops.R
 997ac345d7a323061c39972cfe104ea4 *R/matrix_ops.R
 69c69ac00c3253b15a988feaa9fcccec *R/meta_functions.R
 cedab3a486fb55f7add725b1bfdbe655 *R/pkgs.R
-fce2ca74a52efdf79a41466254b4c8d1 *R/pro.R
+7c2678154effaa0d1fb9c551c6fe0bd7 *R/pro.R
 747b01c3f47446a53a67870c460ef99b *R/pversion.R
 d03d9731a23bd121d598c120c43245a1 *R/report_inops.R
 8a64712da57cbeeb602ed0016f212182 *R/s_pattern.R
@@ -39,9 +40,8 @@ a4052926efa4a611c8f163e1da2d9278 *R/strfind_internal.R
 ec20935136511fe01b3316a2ef221a8a *R/stri_locate_ith.R
 a748bceded6cf129339e09d7c9e28e74 *R/tinycodetWrappers.R
 63354b72fa2bbe0c2557470adabee080 *R/transform_if.R
-ed5dac21d63916feec1b9740ad3612ab *R/xxx_atomic_typecast.R
 23834c3a624ce57fbaef08c3ed3467e2 *R/zzz.R
-9d40159f50a5fc9949cbfe95a2884126 *build/partial.rdb
+d54042561b90aafd8a9a202ea63e1e4b *build/partial.rdb
 1ec1bf958dc669b5fe3b4b0a8fa42372 *inst/examples/atomic_typecast.R
 38090126a313c0fcda2959656fb09107 *inst/examples/decimal_truth.R
 984d2c494c20638cd96be42b2b1ea6fe *inst/examples/matrix_ops.R
@@ -53,7 +53,6 @@ ad77096d516bef0add608ca0bbe071b1 *inst/examples/strcut.R
 8271ecf2a0d73b032289362257b38453 *inst/examples/stri_join_mat.R
 23bbd14fe9b5e010bc384916ad4ed233 *inst/examples/stri_locate_ith.R
 441ddabb839d856e45c53cf2cdf408aa *inst/tinytest/count/count_number_of_tests.R
-fa1716746885b716df70f6d2e3a4fb3a *inst/tinytest/dry/test-atomic_conversions.R
 039713c1625a7b3a66b17e8e51435724 *inst/tinytest/dry/test-dry.R
 56ec79ffd20955c4940dcdb3d51d2048 *inst/tinytest/dry/test-matrix_ops.R
 e7425ee99460704b2cc265e5094825cf *inst/tinytest/import/test-import_LL.R
@@ -76,7 +75,7 @@ be914a7dd30b235d11ac2d72e453c863 *inst/tinytest/import/test-x.import.R
 6ffb031f4882399c3bd62ef09e5de576 *inst/tinytest/safer/test-decimal-between.R
 7396ecb1129ea20ce01ef1e420be4c4c *inst/tinytest/safer/test-decimal-consistency.R
 40e64c0fd45735f02773fa91acd2f8f1 *inst/tinytest/safer/test-decimal-eq.R
-7e550b6bb3d776c97e475b2c5a7ab027 *inst/tinytest/safer/test-decimal-is_wholenumber.R
+3b8c9252044692182d1b3334f60609e0 *inst/tinytest/safer/test-decimal-is_wholenumber.R
 e03e57e3b005a02fa2c92c7d12df7cf9 *inst/tinytest/safer/test-pro.R
 59589257e21d8650dd28bc6e8344afe5 *inst/tinytest/special/fakelibs/fake_lib1/tinycodetfakepkg1/DESCRIPTION
 a3dc29e9dd0e4befe18e12acaa4eef07 *inst/tinytest/special/fakelibs/fake_lib1/tinycodetfakepkg1/INDEX
@@ -280,7 +279,7 @@ d77d1827753bda338b6530c6fa04ee29 *inst/tinytest/special/test-pkgs-special.R
 61c1c5a46f7cc884eece9eadc118574b *inst/tinytest/strings/test-str_arithmetic.R
 f8dc0b1ec700e140dd90a8698bf2d111 *inst/tinytest/strings/test-str_search.R
 f582781c38a6fa7afd3292d2a95fd50a *inst/tinytest/strings/test-str_search_at.R
-54001cba535e2773504b77ecf714223b *inst/tinytest/strings/test-str_subset_ops.R
+17a0cae0e04325f597ca09dce5907dd9 *inst/tinytest/strings/test-str_subset_ops.R
 c14d5daa85d232b95525f129cb3d7b49 *inst/tinytest/strings/test-strcut.R
 293f7575b30e40ffc817ae0b5ba7b332 *inst/tinytest/strings/test-strfind_errors.R
 0433b9ee2d9e24e802b7675df1ace316 *inst/tinytest/strings/test-strfind_extract.R
@@ -337,7 +336,6 @@ d0840cbb1f33d88fa66ccf89b5f2ae47 *man/str_subset_ops.Rd
 7fe13a0d053e533e12e083cce8d015f3 *man/stri_join_mat.Rd
 ebad52c1abd6dd05f81058d4cc2806b3 *man/stri_locate_ith.Rd
 34d74776eca90f2bfab8ca3b7f0503b6 *man/transform_if.Rd
-d87432f0a37efb3023fb0d1e52bc45f4 *man/xxx_atomic_typecast.Rd
 7de897bc733cf2818ee877c65bc373c8 *src/C_any_badloc.c
 0f64f7982f60f830a3b2171749d7cf0d *src/C_any_neg.c
 80ef11d947237e03a6bf1ac188f3b349 *src/C_any_nonpos.c
