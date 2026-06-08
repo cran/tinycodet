@@ -1,14 +1,14 @@
-a2e32ca447057774e38fdb088590ee41 *DESCRIPTION
+7b7e7cb0ca62a0818335eb6f5f11067c *DESCRIPTION
 791c47ccea4c6db5a6e31ed3a4a9a7b0 *LICENSE
-b109c3611cb62f9c46649a097de9b1da *NAMESPACE
-938bcf40d724e25ead05b7cfed13e989 *NEWS.md
+054424ff24f567726e30233d1f4d5cda *NAMESPACE
+763abfa9442e356dc37044d54a25baa1 *NEWS.md
 7a2f6ff1f46f6bf15ef1e2ff3c868eee *R/RcppExports.R
 cb81eacdf1f6a177b9ae407b6dbaaa40 *R/aaa0_tinycodet_help.R
 a4c97fafdd2ebba441b6af116e567688 *R/aaa1_tinycodet_safer.R
 cf8dbad65e4e0a0b3f973cd6669a5be0 *R/aaa2_tinycodet_import.R
 53f68292a28c50fca3b5d7b7f7e0775a *R/aaa3_tinycodet_strings.R
 066f952e70a9e94432d8784b3127137e *R/aaa4_tinycodet_dry.R
-bb546ab95dec6a92aaad92bc9cda07e2 *R/aaa5_tinycodet_misc.R
+ffce26f7fe1daf9aa7e63117763c4485 *R/aaa5_tinycodet_misc.R
 9b5ab87936c5910ca74ed9918b25c0b7 *R/decimal_truth.R
 776e6a8e0417d6e6be1a772a18a9df13 *R/import_as.R
 382f0b41f444c85000ac8ba5951b5288 *R/import_data.R
@@ -21,7 +21,6 @@ d84ef559b9a55b340cc0d63e25a31c05 *R/import_inops_unexpose.R
 5408e22f0138b697dd5318ee7c198c19 *R/internal_functions.R
 fbd49f48d9cc987c3039e095aa5a169b *R/internal_typecasting.R
 27ced57cdb45a9c3b9c83cc3b3b27fc5 *R/lock.R
-fe5e2ccd8e49b69db2fa8e7e3563663d *R/logic_ops.R
 997ac345d7a323061c39972cfe104ea4 *R/matrix_ops.R
 69c69ac00c3253b15a988feaa9fcccec *R/meta_functions.R
 cedab3a486fb55f7add725b1bfdbe655 *R/pkgs.R
@@ -291,7 +290,6 @@ ea34bc87bfcf1ffc3690e1fceec8f29d *inst/tinytest/strings/test-stri_locate_ith.R
 d98163c820ebd997f30218314e6e5d1c *inst/tinytest/strings/test-stri_locate_ith_general.R
 bd251126f4247a1304ca09c1093e0fb8 *inst/tinytest/strings/test-stri_locate_ith_internal.R
 250bca9cadf36e4bf0d52b6ea32b5ea7 *inst/tinytest/test-internal.R
-841e736397c468ae9f3e22f7ed3fe028 *inst/tinytest/test-logic_ops.R
 0ea1fc31024e316fdf642ed573647b68 *inst/tinytest/test-report_inops.R
 477bb1386a7b0831681bc5d09501197d *inst/tinytest/test-source_selection.R
 c206dd39673d932d930718e7d8f79014 *inst/tinytest/test_tinycodet.R
@@ -300,7 +298,7 @@ e04a48142d16d72af27ceb80ba1bae59 *man/aaa0_tinycodet_help.Rd
 ced87c7abcada32805435a8a130701b2 *man/aaa2_tinycodet_import.Rd
 117a48f965af6fa65b9c2b5048fe5b92 *man/aaa3_tinycodet_strings.Rd
 638b95b0e601a1f229999f60b1a0aa79 *man/aaa4_tinycodet_dry.Rd
-992e54a37efb9f9bd6c7f8f6ac0ff300 *man/aaa5_tinycodet_misc.Rd
+7db3a6b8b0cec3809b5f7f5df58272b5 *man/aaa5_tinycodet_misc.Rd
 5755a0ac29bf5bb2522fb4998d7e86c5 *man/decimal_truth.Rd
 cbe0a06288cf5e4ee5c94e0a324d390a *man/figures/aboutsearch-boundaries-blue.svg
 a8b7cf77de830efe5a01dffee2feb89b *man/figures/aboutsearch-charclass-lightyellow.svg
@@ -319,7 +317,6 @@ ec11237d8c7cdc2447d20016b92d8b26 *man/import_as.Rd
 91779b1f414f455bd84ce8644bc94b4c *man/import_inops.control.Rd
 c0a422c623ea3dc212895769978d2711 *man/import_misc.Rd
 a5f1d7e38851024475aa1032da579e6d *man/lock.Rd
-ee39174f4c8a996389b00100fde8db90 *man/logic_ops.Rd
 52cee5eee94e2d40a1450fb38d5da4db *man/matrix_ops.Rd
 ac84bac4635156eaadec49f7135719e2 *man/pkgs.Rd
 724ccbbdfad389f3478863b8b582caf4 *man/pro.Rd
