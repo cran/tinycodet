@@ -42,28 +42,23 @@ See also \link[base]{loadNamespace}.}
 The order of the character vector given in \code{deps_type} affects
 the order of the returned character vector; see Details sections.}
 
-\item{base}{logical,
+\item{base}{\code{TRUE} or \code{FALSE},
 indicating whether base/core R should be included (\code{TRUE}),
 or not included (\code{FALSE}).}
 
-\item{recom}{logical,
+\item{recom}{\code{TRUE} or \code{FALSE},
 indicating whether the pre-installed 'recommended' R-packages should be included
 (\code{TRUE}),
 or not included (\code{FALSE}).}
 
-\item{rstudioapi}{logical,
+\item{rstudioapi}{\code{TRUE} or \code{FALSE},
 indicating whether the 'rstudioapi' R-package should be included
 (\code{TRUE}),
 or not included (\code{FALSE}).}
 
-\item{shared_tidy}{logical,
-indicating whether the shared dependencies of the 'tidyverse' should be included
-(\code{TRUE}),
-or not included (\code{FALSE}). \cr
-\bold{Details:} \cr
-Some of the (often many) dependencies 'tidyverse' packages have
-are shared across the majority of the 'tidyverse'. \cr
-The "official" list of shared dependencies in the 'tidyverse' currently is the following: \cr
+\item{shared_tidy}{\code{TRUE} or \code{FALSE},
+indicating whether the following packages should be included (\code{TRUE})
+or not included (\code{FALSE}): \cr
 'rlang', 'lifecycle', 'cli', 'glue', and 'withr'.}
 
 \item{type}{The type of functions to list. Possibilities:
@@ -140,7 +135,7 @@ The unique (thus non-repeating)
 package names are then returned to the user. \cr \cr
 }
 \examples{
-\dontshow{if ("dplyr" \%installed in\% .libPaths()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if ("dplyr" \%installed in\% .libPaths()) withAutoprint(\{ # examplesIf}
 "dplyr" \%installed in\% .libPaths()
 
 pkg_get_deps_minimal("dplyr")
