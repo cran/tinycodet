@@ -22,8 +22,6 @@
 #' (4) Reducing repetitive code; \cr
 #' see \link{tinycodet_dry}. \cr
 #' \cr
-#' And some miscellaneous functionality; see \link{tinycodet_misc}. \cr
-#' \cr
 #' \cr
 #' Please check the Change-log
 #' (see links below)
@@ -33,7 +31,7 @@
 #' \href{https://www.tinyverse.org/}{tinyverse}
 #' philosophy.
 #' Besides linking to 'Rcpp', 'tinycodet' only has one other dependency:
-#' 'stingi'.
+#' 'stringi'.
 #' No other dependencies, thus avoiding "dependency hell".
 #' Most functions in this R-package are vectorized and optimised. \cr
 #' \cr
